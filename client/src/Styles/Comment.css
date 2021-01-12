@@ -1,0 +1,97 @@
+
+.Comments {
+    border-top: 1px solid #e6e6e6;
+    margin-top: 15px;
+    padding-left: 25px;
+    padding-right: 25px;
+
+}
+
+.Comments .Comment {
+    padding-top: 15px;
+    padding-bottom: 10px;
+    margin-top: -1px;
+    border-top: 1px solid #e6e6e6;
+
+}
+
+.Comments .Comment .infos .name {
+    color: #4e4e4e;
+    font-size: 14px;
+    font-weight: bold;
+
+}
+
+.Comments .Comment .infos .username {
+    color: #8c8c8c;
+    font-size: 12px;
+    margin-left: 10px;
+
+}
+
+.Comments .Comment .content {
+    margin-top: 10px;
+    overflow: auto;
+    word-wrap: break-word; /* All browsers since IE 5.5+ */
+    overflow-wrap: break-word;
+    display: block;
+    font-size: 13px;
+
+}
+
+.Comments .Comment a {
+    font-size: 11px;
+}
+
+.Comments .Comment [contentEditable=true] {
+    min-height: 30px;
+
+}
+
+.Comments .Comment .RespondItem .myButton {
+    max-width: 120px;
+    line-height: 7px;
+
+}
+
+.Comments .Comment .RespondItem {
+    margin-top: 10px;
+    font-size: 9px;
+
+}
+
+.Comments .Comment .RespondItem .newMessage {
+
+    font-size: 14px;
+
+}
+
+.Comments .Comment .RespondItem .newMessage:empty:before {
+    content: "Répondre au commentaire";
+    display: block;
+}
+
+.Comments .Comment .RespondItem .newMessage:empty:not(:focus):before {
+    content: "Répondre au commentaire";
+}
+
+.Comments .Comment .infos a img {
+    margin-right: 5px;
+    float: left;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    object-fit: scale-down;
+    box-shadow: 0 0 2px rgba(0, 0, 0, .5);
+}
+
+.Comments .Comment .infos .date {
+    margin-left: 4px;
+    color: #949494;
+    font-size: 10px;
+
+}
+
+.Comments .close {
+    margin-right: 5px;
+}

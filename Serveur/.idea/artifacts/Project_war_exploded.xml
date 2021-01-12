@@ -1,0 +1,18 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Project:war exploded">
+    <output-path>$PROJECT_DIR$/classes/artifacts/Project_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="Project" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="json-org.jar" module-name="TwisterFinal" />
+          <element id="library" level="module" name="mysql-connector-java-8.0.15.jar" module-name="TwisterFinal" />
+          <element id="library" level="module" name="mongo-java-driver-3.10.1.jar" module-name="TwisterFinal" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="Project/web/Web" />
+    </root>
+  </artifact>
+</component>

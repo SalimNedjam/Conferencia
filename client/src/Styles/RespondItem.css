@@ -1,0 +1,16 @@
+
+.RespondItem .myButton, .PostMessage .myButton {
+    margin-left: 20px;
+    max-width: 200px;
+
+}
+
+.RespondItem [contentEditable=true] {
+    font-size: 14px;
+    margin-top: -1px
+
+}
+
+.RespondItem, .infos {
+    text-align: left;
+}

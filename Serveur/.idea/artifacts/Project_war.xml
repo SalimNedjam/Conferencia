@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Project:war">
+    <output-path>$PROJECT_DIR$/classes/artifacts/Project_war</output-path>
+    <root id="archive" name="Project_war.war">
+      <element id="artifact" artifact-name="Project:war exploded" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="json-org.jar" module-name="Project" />
+          <element id="library" level="module" name="mysql-connector-java-8.0.15.jar" module-name="Project" />
+          <element id="library" level="module" name="mongo-java-driver-3.10.1.jar" module-name="Project" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

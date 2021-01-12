@@ -1,0 +1,84 @@
+.ListAmis {
+    margin-top: 10px;
+    font-size: 20px;
+    color: #c8c3c0;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: #ffffff;
+    width: 30%;
+    margin-left: 10px;
+    float: left;
+    margin-bottom: 20px;
+    box-shadow: 0 0 11px rgba(0, 0, 0, .2);
+
+}
+
+.ListAmis .headAmis {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #4e4e4e;
+    font-size: 18px;
+
+}
+
+.ApprouveList .headApprouve {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #4e4e4e;
+    font-size: 18px;
+
+}
+
+.ListAmis .list, .ApprouveList .list {
+
+    max-height: 305px;
+    overflow: auto;
+}
+
+.Amis, .Approuve {
+    margin: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+    padding: 10px;
+    overflow: hidden;
+    background-position: center;
+    transition: background 0.8s;
+    cursor: pointer;
+    white-space: nowrap;
+
+}
+
+.Amis .infos, .Approuve .infos {
+    display: inline-block;
+    color: #4e4e4e;
+    font-size: 13px;
+    font-weight: bold;
+
+}
+
+.Amis .infos .name, .Approuve .infos .name {
+
+    white-space: nowrap;
+
+}
+
+.Amis .photo, .Approuve .photo {
+    display: inline-block;
+    text-align: center;
+    float: left;
+}
+
+.Amis .photo .profile, .Approuve .photo .profile {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    object-fit: scale-down; /* scale-down */
+
+}
+
+.Amis:hover, .Approuve:hover {
+    background: radial-gradient(circle, transparent 1%, #F9F9F9 1%);
+}
+
+.Approuve .approvement {
+    text-align: center;
+}
