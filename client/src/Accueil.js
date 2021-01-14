@@ -22,7 +22,7 @@ export default class Accueil extends Component {
         params.append('key', read_cookie("key"));
         params.append('op', "friends");
 
-        axios.get("http://localhost:8080/TwisterFinal/Messages?" + params)
+        axios.get("http://localhost:8080/TwisterFinal/Conferences?" + params)
         .then(res => {
             this.setState(() => {
                 return {data: res.data.Array};

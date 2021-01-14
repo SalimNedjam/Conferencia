@@ -12,7 +12,7 @@ public class UsersManager {
 
 
 
-    public static JSONObject createUser(String password, String email, String nom, String prenom, String title, String institution, String address, String zip, String city, String country, String phone) {
+    public static JSONObject createUser(String password, String email, String nom, String prenom) {
         /*if (password == null || email == null || nom == null || prenom == null || title == null || institution == null || address == null
                 || zip == null || city == null || country == null || phone == null
                 || password.equals("") || email.equals("") || nom.equals("") || prenom.equals("") || title.equals("") || institution.equals("")
