@@ -6,8 +6,13 @@ import java.sql.Date;
 import java.sql.SQLException;
 
 public class UsersTools {
+    /*
     public static boolean insertUser(String password, String email, String nom, String prenom, String title, String institution, String address, String zip, String city, String country, String phone) throws SQLException {
         return UsersDB.insertUser(password, email, nom, prenom, title, institution, address, zip, city, country, phone);
+    }*/
+
+    public static boolean insertUser(String password, String email, String nom, String prenom) throws SQLException {
+        return UsersDB.insertUser(password, email, nom, prenom);
     }
 
     public static boolean existUser(int idFriend) throws SQLException {

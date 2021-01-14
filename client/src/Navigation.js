@@ -5,7 +5,7 @@ import Register from "./Register";
 import Forgot from "./Forgot";
 import MyProfile from "./MyProfile";
 import Success from "./Success";
-import Header from "./Composants/Header";
+import Header from "./components/Header";
 import ShowProfile from "./ShowProfile";
 import {read_cookie} from "sfcookies";
 import ChangePassword from "./ChangePassword";

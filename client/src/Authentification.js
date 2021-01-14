@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, {Component} from "react";
 import axios from 'axios';
-import logo from './res/logo.png'
+import logo from './res/logo.png';
 
 
 export default class Authentification extends Component {
@@ -44,6 +44,95 @@ export default class Authentification extends Component {
     }
 
     render() {
+        return (
+            <div class="mt-5 container p-4 box box-auth">
+                <form>
+                    <h1 class="mb-4">Conferentia</h1>
+                    {this.state.error && 
+                        <div class="alert alert-danger p-2" role="alert">
+                        {this.state.error}
+                        </div>
+                    }
+                    <div class="mb-4">
+                        <label 
+                            for="emailInput" 
+                            class="form-label">
+                            Adresse mail
+                        </label>
+                        <input 
+                            type="email"
+                            name="login"
+                            class="form-control"
+                            id="emailInput"
+                            ref={(inputLogin) => {
+                                this.inputLogin = inputLogin
+                            }}
+                            onKeyPress={
+                                event => {
+                                    if (event.key === "Enter")
+                                        this.checkValidity();
+                                }
+                            }
+                            aria-describedby="emailHelp"/>
+                    </div>
+                    <div class="mb-3">
+                        <label
+                            for="passwordInput" 
+                            class="form-label">
+                            Mot de passe
+                        </label>
+                        <input 
+                            type="password"
+                            name="pwd"
+                            class="form-control"
+                            ref={(inputPassword) => {
+                                this.inputPassword = inputPassword
+                            }}
+                            onKeyPress={
+                                event => {
+                                    if (event.key === "Enter")
+                                        this.checkValidity();
+                                }
+                            }
+                            id="passwordInput"/>
+                            <a onClick={() => this.props.forgot()}>
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input 
+                            type="checkbox" 
+                            defaultChecked={this.state.checkbox}
+                            class="form-check-input"
+                            onChange={() => this.setState({
+                                checkbox: !this.state.checkbox
+                            })}
+                            id="checkInput"/>
+                        <label 
+                            class="form-check-label" 
+                            for="checkInput">
+                            Garder ma session active
+                        </label>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button
+                            type="button"
+                            name="connexion"
+                            onClick={() => this.checkValidity()}
+                            class="btn btn-primary m-1">
+                            Connexion
+                        </button>
+                        <button 
+                            type="button"
+                            name="signup"
+                            onClick={() => this.props.signup()}
+                            class="btn btn-light m-1">
+                            Inscription
+                        </button>
+                    </div>
+                </form>
+            </div>
+        );
 
         return (
             <div>

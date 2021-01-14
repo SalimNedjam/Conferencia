@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="activation" level="project" />
+    <orderEntry type="library" name="commons-fileupload-1.4" level="project" />
+    <orderEntry type="library" name="commons-io-2.6" level="project" />
+    <orderEntry type="library" name="javax.mail" level="project" />
+    <orderEntry type="library" name="json-org" level="project" />
+    <orderEntry type="library" name="mongo-java-driver-3.10.1" level="project" />
+    <orderEntry type="library" name="mysql-connector-java-8.0.15" level="project" />
+    <orderEntry type="library" name="servlet-api" level="project" />
+    <orderEntry type="library" name="tomcat-catalina-8.5.39" level="project" />
+  </component>
+</module>

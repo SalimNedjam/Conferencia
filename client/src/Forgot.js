@@ -13,9 +13,7 @@ export default class Forgot extends Component {
     }
 
     sendRequest() {
-
-
-        if (this.handleValidation()) {
+        if (this.checkForm()) {
             const formData = new URLSearchParams();
             formData.append('email', this.inputEmail.value);
 
@@ -25,30 +23,77 @@ export default class Forgot extends Component {
 
     }
 
-    handleValidation() {
+    checkForm() {
         let errors = {};
         let formIsValid = true;
 
-        //Email
         if (this.inputEmail.value === "") {
             formIsValid = false;
-            errors["email"] = "Email: Cannot be empty";
-        }
-        else {
-            let lastAtPos = this.inputEmail.value.lastIndexOf('@');
-            let lastDotPos = this.inputEmail.value.lastIndexOf('.');
-
-            if (!(lastAtPos < lastDotPos && lastAtPos > 0 && this.inputEmail.value.indexOf('@@') == -1 && lastDotPos > 2 && (this.inputEmail.value.length - lastDotPos) > 2)) {
-                formIsValid = false;
-                errors["email"] = "Email: Is not valid";
-            }
+            errors["email"] = "Le champs ne peut être vide";
         }
 
-        this.setState({errors: errors});
+        this.setState({errors});
         return formIsValid;
     };
 
     render() {
+        return (
+            <div class="container box box-auth mt-5 p-4 mb-5">
+                <h2 class="mb-3">Mot de passe oublié</h2>
+                
+                {this.state.errors["email"] && 
+                    <div class="alert alert-danger p-2" role="alert">
+                        {this.state.errors["email"]}
+                    </div>
+                }
+
+                <div class="mb-3">
+                    <label 
+                        class="form-check-label" 
+                        for="emailInput">
+                        Adresse e-mail
+                    </label>
+                    <input 
+                        type="email" 
+                        class="form-control"
+                        ref={(inputEmail) => {
+                            this.inputEmail = inputEmail
+                        }}
+                        onKeyPress={
+                            event => {
+                                if (event.key === "Enter")
+                                    this.sendRequest();
+                            }
+                        }
+                        id="emailInput"/>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <button 
+                        type="button"
+                        name="singup"
+                        onClick={() => this.props.signin()}
+                        class="btn btn-light m-1">
+                        Annuler
+                    </button>
+                    <button 
+                        type="button"
+                        name="change"
+                        onClick={() => this.props.changePassword()}
+                        class="btn btn-light m-1">
+                        Changer de mot de passe
+                    </button>
+                    <button
+                        type="button"
+                        name="connexion"
+                        onClick={() => this.sendRequest()}
+                        class="btn btn-primary m-1">
+                        Suivant
+                    </button>
+                </div>
+            </div>
+        );
+
         return (
             <div className="Forgot">
                 <div className="input_container">

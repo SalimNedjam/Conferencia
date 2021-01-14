@@ -1,43 +1,6 @@
 import React, {Component} from "react";
-import axios from 'axios'
 
-const FORM = {
-    mail: {
-        mandatory: true,
-        name: 'email',
-        type: 'email',
-        label: "Adresse mail",
-    },
-    password: {
-        mandatory: true,
-        name: 'pass',
-        type: 'password',
-        label: "Mot de passe",
-        minLength: 6,
-    },
-    confirmPassword: {
-        verify: 'password',
-        mandatory: true,
-        name: 'confirmPass',
-        type: 'password',
-        label: "Confirmation de mot de passe",
-        minLength: 6,
-    },
-    nom: {
-        mandatory: true,
-        name: 'lastname',
-        type: 'text',
-        label: "Nom",
-    },
-    prenom: {
-        mandatory: true,
-        name: 'firstname',
-        type: 'text',
-        label: "Prénom",
-    },
-}
-
-export default class Register extends Component {
+export default class Form extends Component {
 
 
     constructor(props) {
@@ -45,22 +8,20 @@ export default class Register extends Component {
 
         this.state = {
             errors: {},
-            text: true
         };
 
         this.inputs = [];
     }
 
-    createUser() {
+    submit() {
         if (this.checkForm()) {
             const params = new URLSearchParams();
         
-            for (let index in Object.keys(FORM)) {
+            for (let index in Object.keys(this.props.form)) {
                 index = Object.keys(FORM)[index];
-                if (!FORM[index].verify) {
-                    params.append(index, this.inputs[index].value);
-                }
+                params.append(index, this.inputs[index].value);
             }
+
 
             axios.post("http://localhost:8080/Project_war/CreateUser", params)
             .then(res => {
@@ -93,11 +54,6 @@ export default class Register extends Component {
                 this.inputs[index].value = "";
                 formIsValid = false;
                 errors[index] = `Minimum ${item.minLength} caractères`;
-            } else if (item.verify && this.inputs[index].value !== this.inputs[item.verify].value) {
-                this.inputs[item.verify].value = "";
-                this.inputs[index].value = "";
-                formIsValid = false;
-                errors[item.verify] = "Mot de passe non identique";
             }
         }
 

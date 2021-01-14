@@ -1,0 +1,9 @@
+
+.box {
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+}
+
+.box-auth {
+  width: 500px !important;
+}

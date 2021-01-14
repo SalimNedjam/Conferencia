@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Devrep">
+    <output-path>$PROJECT_DIR$/out/artifacts/Devrep</output-path>
+    <root id="archive" name="Devrep.war" />
+  </artifact>
+</component>

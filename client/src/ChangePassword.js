@@ -2,26 +2,56 @@ import React, {Component} from "react";
 import axios from 'axios'
 import logo from './res/logo.png'
 
+const FORM = {
+    lgin: {
+        mandatory: true,
+        name: 'email',
+        type: 'email',
+        label: "Adresse mail",
+    },
+    password: {
+        mandatory: true,
+        name: 'pass',
+        type: 'password',
+        label: "Mot de passe",
+        minLength: 6,
+    },
+    newPassword: {
+        mandatory: true,
+        name: 'pass',
+        type: 'password',
+        label: "Mot de passe",
+        minLength: 6,
+    },
+}
+
+
 export default class ChangePassword extends Component {
 
 
     constructor(props) {
         super(props);
+
         this.state = {
             errors: {},
             text: true
         }
 
-
+        this.inputs = [];
     }
 
     sendRequest() {
         if (this.handleValidation()) {
             const params = new URLSearchParams();
+
+            for (let index in Object.keys(FORM)) {
+                index = Object.keys(FORM)[index];
+                params.append(index, this.inputs[index].value);
+            }
+
             params.append('login', this.inputLogin.value);
             params.append('password', this.inputPassword.value);
             params.append('newPassword', this.inputNewPassword.value);
-
 
             axios.post("http://localhost:8080/TwisterFinal/Reset", params)
                 .then(res => {
@@ -37,9 +67,31 @@ export default class ChangePassword extends Component {
 
                 });
         }
-        console.log(this.state.errors)
+    }
 
+    checkForm() {
+        let errors = {};
+        let formIsValid = true;
 
+        for (let index in Object.keys(FORM)) {
+            index = Object.keys(FORM)[index];
+            let item = FORM[index];
+            if (item.mandatory && this.inputs[index].value === "") {
+                errors[index] = "Le champ ne peut être vide";
+                formIsValid = false;
+            } else if (item.regex && !this.inputs[index].value.match(item.regex)) {
+                this.inputs[index].value = "";
+                formIsValid = false;
+                errors[index] = "Uniquement des caractères";
+            } else if (item.minLength && this.inputs[index].value.length < item.minLength) {
+                this.inputs[index].value = "";
+                formIsValid = false;
+                errors[index] = `Minimum ${item.minLength} caractères`;
+            }
+        }
+
+        this.setState({errors});
+        return formIsValid;
     }
 
 
@@ -53,20 +105,18 @@ export default class ChangePassword extends Component {
             errors["login"] = "Login: Cannot be empty";
         }
 
-
         //password
         if (this.inputPassword.value === "") {
             formIsValid = false;
             errors["password"] = "Password: Cannot be empty";
         }
 
-
         //password
         if (this.inputNewPassword.value === "") {
             formIsValid = false;
             errors["newPassword"] = "Password: Cannot be empty";
         }
-        else if (this.inputNewPassword.value.length < 5) {
+        else if (this.inputNewPassword.value.length < 6) {
             this.inputNewPassword.value = "";
             formIsValid = false;
             errors["newPassword"] = "Password: Too short, the minimum is 6 letters";
