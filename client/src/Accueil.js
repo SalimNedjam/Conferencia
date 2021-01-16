@@ -45,45 +45,6 @@ export default class Accueil extends Component {
                 </div>
             </div>
         )
-
-        return (
-
-            <div className="Accueil">
-                <div className="body">
-
-                    <div className="section">
-                        <PostMessage reload={this.componentDidMount}/>
-
-                        {
-                            data &&
-                            <div className="article_container">
-                                {this.state.data.map((article) => (
-
-                                    <Messages
-                                        likes={article.likes}
-                                        idUser={this.props.idUser}
-                                        date={article.date}
-                                        id={article.author.user_id}
-                                        getuserprofile={this.props.getuserprofile}
-                                        name={article.author.prenom}
-                                        lastname={article.author.nom}
-                                        login={article.author.login}
-                                        content={article.message}
-                                        listComment={article.comments}
-                                        publication={article.picture}
-                                        messageId={article.message_id}
-                                        key={article.message_id}
-                                        reload={this.componentDidMount}
-
-                                    />
-                                ))}
-
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        );
     }
 
 }

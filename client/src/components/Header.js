@@ -1,36 +1,22 @@
 import React, {Component} from "react";
-import logo from '../res/logo.png'
-import axios from 'axios'
-import {read_cookie} from "sfcookies";
+import {connect} from 'react-redux';
 
-export default class Header extends Component {
-
-   
-    disconnect() {
-        const params = new URLSearchParams();
-        params.append('key', read_cookie("key"));
-
-        axios.post("http://localhost:8080/Project_war/Logout", params)
-        .then(() => {
-                this.props.logout()
-
-            }
-        );
-    }
+class Header extends Component {
 
     render() {
       return (
         <nav class="navbar navbar-light bg-light">
           <div class="container-fluid">
-            <a class="navbar-brand">Conferentia</a>
+            <a class="navbar-brand" onClick={() => window.location.href='/'}>Conferentia</a>
             <div class="d-flex">
-              <div class="p-2 d-flex align-items-center">
-                {this.props.prenomUser} {this.props.nomUser}
-              </div>
+              <button 
+                class="btn btn-link" 
+                onClick={() => window.location.href = "/me"}>
+                {this.props.user.firstName} {this.props.user.lastName}
+              </button>
               <button 
                 class="btn btn-outline-primary" 
-                onClick={() => this.disconnect()}
-                type="submit">
+                onClick={() => window.location.href = "/logout"}>
                 Déconnexion
               </button>
             </div>
@@ -40,3 +26,11 @@ export default class Header extends Component {
     }
 
 }
+
+const mapStateToProps = state => {
+	return {
+	  user: state.user.user,
+	};
+}
+
+export default connect(mapStateToProps)(Header);

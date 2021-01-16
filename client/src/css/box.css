@@ -4,6 +4,10 @@
   border-radius: 3px;
 }
 
-.box-auth {
+.box-sm {
   width: 500px !important;
+}
+
+.box-md {
+  width: 800px !important;
 }

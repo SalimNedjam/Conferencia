@@ -141,9 +141,15 @@ public class AuthsDB {
                 userId = rs.getInt("id_user");
                 o.put("nom", rs.getString("nom"));
                 o.put("prenom", rs.getString("prenom"));
+                o.put("title", rs.getString("title"));
+                o.put("institution", rs.getString("institution"));
+                o.put("address", rs.getString("address"));
+                o.put("zip", rs.getString("zip"));
+                o.put("city", rs.getString("city"));
+                o.put("country", rs.getString("country"));
+                o.put("phone", rs.getString("phone"));
             }
             o.put("user", userId);
-
 
         }
 
@@ -153,7 +159,7 @@ public class AuthsDB {
 
     public static String getLoginFromId(int idUser) throws SQLException {
         String login = "";
-        String query = " select Username From Users where (id_user=?)";
+        String query = " select Mail From Users where (id_user=?)";
 
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
@@ -163,7 +169,7 @@ public class AuthsDB {
 
             ResultSet rs = preparedStmt.executeQuery();
             if (rs.next())
-                login = rs.getString("Username");
+                login = rs.getString("Mail");
 
 
         }

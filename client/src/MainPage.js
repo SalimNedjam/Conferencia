@@ -10,7 +10,6 @@ export default class MainPage extends Component {
     constructor(props) {
         super(props);
 
-
         this.state = {
             key: "",
             Userlogin: "",
@@ -22,7 +21,7 @@ export default class MainPage extends Component {
             showNom: "",
             showPrenom: "",
             connected: false,
-            current: "signin",
+            current: "loading",
             searchUser: null,
             searchMessage: null
         };

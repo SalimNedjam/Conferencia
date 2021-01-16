@@ -77,6 +77,16 @@ export default class Navigation extends Component {
 
         />;
 
+        if (this.state.current === ("loading")) {
+            return (
+                <div class="center-block d-flex align-items-center justify-content-center mt-5">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            )
+        }
+
         if (this.state.connected === true) {
             if (this.state.current === ("accueil")) {
                 return (<nav>

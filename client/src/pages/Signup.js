@@ -80,15 +80,15 @@ const FORM = {
     },
 }
 
-export default class Register extends Component {
+export default class Signup extends Component {
 
 
     constructor(props) {
         super(props);
 
         this.state = {
-            errors: {},
-            text: true
+			errors: {},
+			loading: false,
         };
 
         this.inputs = [];
@@ -104,12 +104,14 @@ export default class Register extends Component {
                     params.append(index, this.inputs[index].value);
                     console.log(this.inputs[index].value);
                 }
-            }
+			}
+			
+			this.setState({loading: true});
 
             axios.post("http://localhost:8080/Project_war/CreateUser", params)
             .then(res => {
                 if (res.data.code === undefined) {
-                    this.props.signin();
+                    window.location.href = '/login/ok';
                 } else {
                     let errors = {};
                     errors["serverError"] = res.data.message;
@@ -121,7 +123,8 @@ export default class Register extends Component {
 
     checkForm() {
         let errors = {};
-        let formIsValid = true;
+		let formIsValid = true;
+		let scroll = false;
 
         for (let index in Object.keys(FORM)) {
             index = Object.keys(FORM)[index];
@@ -142,7 +145,11 @@ export default class Register extends Component {
                 this.inputs[index].value = "";
                 formIsValid = false;
                 errors[item.verify] = "Mot de passe non identique";
-            }
+			}
+			if (!formIsValid && !scroll) {
+				scroll = true;
+				this.inputs[index].scrollIntoView()
+			}
         }
 
         this.setState({errors});
@@ -202,49 +209,69 @@ export default class Register extends Component {
                 {jsx}
             </div>
         )
-    }
+	}
 
     render() {
         return (
-            <div class="container box box-auth mt-5 p-4 mb-5">
-                <h1 class="mb-3">Inscription</h1>
-                <p class="mb-4">
-                    Les champs obligatoires sont marqués par
-                    <span class="text-danger"> * </span>.
-                </p>
+			<div>
+				<div class="container box box-sm mt-5 p-4 mb-5">
+					
+					<h1 class="mb-3">Inscription</h1>
+					<p class="mb-4">
+						Les champs obligatoires sont marqués par
+						<span class="text-danger"> * </span>.
+					</p>
 
-                {this.state.errors["serverError"] && 
-                    <div class="alert alert-danger p-2" role="alert">
-                        {this.state.errors["serverError"]}
-                    </div>
-                }
+					{this.state.errors["serverError"] && 
+						<div class="alert alert-danger p-2" role="alert">
+							{this.state.errors["serverError"]}
+						</div>
+					}
 
-                {this.state.errors["email"] && 
-                    <div class="alert alert-danger p-2" role="alert">
-                        {this.state.errors["email"]}
-                    </div>
-                }
+					{this.state.errors["email"] && 
+						<div class="alert alert-danger p-2" role="alert">
+							{this.state.errors["email"]}
+						</div>
+					}
 
-                <form>
-                    {Object.keys(FORM).map((item) => this.renderItem(item, FORM[item]))}
-                </form>
-                <div class="d-flex justify-content-center">
-                    <button
-                        type="button"
-                        name="connexion"
-                        onClick={() => this.createUser()}
-                        class="btn btn-primary m-1">
-                        Inscription
-                    </button>
-                    <button 
-                        type="button"
-                        name="connexion"
-                        onClick={() => this.props.signin()}
-                        class="btn btn-light m-1">
-                        J'ai déjà un compte
-                    </button>
-                </div>
-            </div>
+					<form>
+						<fieldset disabled={this.state.loading}>
+							{Object.keys(FORM).map((item) => this.renderItem(item, FORM[item]))}
+						</fieldset>
+					</form>
+					<div class="d-flex justify-content-center">
+						{!this.state.loading &&
+							<button
+								type="button"
+								name="connexion"
+								onClick={() => this.createUser()}
+								class="btn btn-primary m-1">
+								Inscription
+							</button>
+						}	
+						{this.state.loading && 
+							<button
+								type="button"
+								name="connexion"
+								disabled
+								class="btn btn-primary m-1">
+								<div class="d-flex align-items-center">
+									<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+									&nbsp;Chargement...
+								</div>
+							</button>
+						}
+						<button 
+							type="button"
+							name="connexion"
+							disabled={this.state.loading}
+							onClick={() => window.location.href = '/login'}
+							class="btn btn-light m-1">
+							J'ai déjà un compte
+						</button>
+					</div>
+				</div>
+			</div>
         )
     }
 

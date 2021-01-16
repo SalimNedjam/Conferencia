@@ -1,0 +1,123 @@
+import React, {Component} from "react";
+import {connect} from 'react-redux';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect
+} from "react-router-dom";
+
+import {bake_cookie, read_cookie} from 'sfcookies';
+import axios from 'axios';
+
+import { setUser, unsetUser } from "./redux/actions";
+
+import Home from './pages/Home.js';
+import Profile from './pages/Profile.js';
+import Signup from './pages/Signup.js';
+import Login from './pages/Login.js';
+import Logout from './pages/Logout.js';
+import Header from './components/Header.js';
+
+class App extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			loading: true,
+		}
+	}
+
+	componentDidMount() {
+		this.state.loading = true;
+		this.islogin();
+	}
+
+	componentWillUpdate() {
+		this.isLogout();
+	}
+
+	islogin() {
+		const keySession = read_cookie("key");
+		if (keySession !== "") {
+			const params = new URLSearchParams();
+			params.append('key', read_cookie("key"));
+			axios.post("http://localhost:8080/Project_war/Login", params)
+			.then(res => {
+				if (res.data.code === undefined) {
+					console.log("APP", res.data);
+					this.props.setUser({
+						key: keySession,
+						login: res.data.login,
+						id: res.data.user,
+						firstName: res.data.prenom,
+						lastName: res.data.nom,
+					});
+				}
+				this.setState({loading: false});
+			})
+		} else {
+			this.setState({loading: false});
+		}
+	}
+
+	isLogout() {
+		const keySession = read_cookie("key");
+		if (keySession !== "") {
+			const params = new URLSearchParams();
+			params.append('key', read_cookie("key"));
+			axios.post("http://localhost:8080/Project_war/Login", params)
+				.then(res => {
+					if (res.data.code !== undefined) {
+						bake_cookie("key", "");
+						this.props.unsetUser();
+					}
+				})
+		}
+	}
+
+	render() {
+		if (this.state.loading) return (<div></div>);
+		if (this.props.user === undefined) {
+			return (
+				<Router>
+					<div>
+						<Switch>
+							<Route path="/login/:msg" component={Login}/>
+							<Route path="/login" component={Login}/>
+							<Route path="/signup" component={Signup}/>
+							<Redirect to="/login"/>
+						</Switch>
+					</div>
+				</Router>
+			);
+		}
+		return (
+			<Router>
+			  <div>
+					<Switch>
+						<Route path="/me">
+							<Profile/>
+						</Route>
+						<Route path="/logout">
+							<Logout/>
+						</Route>
+						<Route path="/">
+							<Home/>
+							<Redirect to="/" />
+						</Route>
+					</Switch>
+			  </div>
+			</Router>
+		);
+	}
+}
+
+const mapStateToProps = state => {
+	return {
+	  user: state.user.user,
+	};
+}
+
+export default connect(mapStateToProps, {setUser, unsetUser})(App);

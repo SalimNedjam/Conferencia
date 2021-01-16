@@ -47,7 +47,10 @@
         <servlet-name>CreateUser</servlet-name>
         <servlet-class>Servlets.CreateUser</servlet-class>
     </servlet>
-
+    <servlet>
+        <servlet-name>UserInfos</servlet-name>
+        <servlet-class>Servlets.UserInfos</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>Reset</servlet-name>
         <servlet-class>Servlets.Reset</servlet-class>
@@ -65,7 +68,10 @@
         <servlet-name>CreateUser</servlet-name>
         <url-pattern>/CreateUser</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>UserInfos</servlet-name>
+        <url-pattern>/GetUserInfos</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Reset</servlet-name>
         <url-pattern>/Reset</url-pattern>
