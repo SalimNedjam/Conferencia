@@ -13,12 +13,12 @@ import axios from 'axios';
 
 import { setUser, unsetUser } from "./redux/actions";
 
-import Home from './pages/Home.js';
-import Profile from './pages/Profile.js';
-import Signup from './pages/Signup.js';
-import Login from './pages/Login.js';
-import Logout from './pages/Logout.js';
-import Header from './components/Header.js';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
+import Logout from './pages/Logout';
+import NewConference from './pages/NewConference';
 
 class App extends Component {
 
@@ -46,11 +46,11 @@ class App extends Component {
 			axios.post("http://localhost:8080/Project_war/Login", params)
 			.then(res => {
 				if (res.data.code === undefined) {
-					console.log("APP", res.data);
 					this.props.setUser({
 						key: keySession,
 						login: res.data.login,
 						id: res.data.user,
+						admin: res.data.admin,
 						firstName: res.data.prenom,
 						lastName: res.data.nom,
 					});
@@ -99,6 +99,9 @@ class App extends Component {
 					<Switch>
 						<Route path="/me">
 							<Profile/>
+						</Route>
+						<Route path="/new">
+							<NewConference/>
 						</Route>
 						<Route path="/logout">
 							<Logout/>
