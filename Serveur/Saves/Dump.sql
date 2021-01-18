@@ -16,6 +16,95 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `Conference_type`
+--
+
+DROP TABLE IF EXISTS `Conference_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Conference_type` (
+  `id_type` int NOT NULL AUTO_INCREMENT,
+  `id_conf` int NOT NULL,
+  `nom` varchar(45) NOT NULL,
+  `tarif_early` int NOT NULL,
+  `tarif_late` int NOT NULL,
+  PRIMARY KEY (`id_type`),
+  KEY `fk_Conference_type_1_idx` (`id_conf`),
+  CONSTRAINT `fk_Conference_type_1` FOREIGN KEY (`id_conf`) REFERENCES `Conferences` (`id_conf`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Conference_type`
+--
+
+LOCK TABLES `Conference_type` WRITE;
+/*!40000 ALTER TABLE `Conference_type` DISABLE KEYS */;
+INSERT INTO `Conference_type` VALUES (1,1,'Type1',10,20),(2,1,'Type1',10,20),(3,1,'Type1',10,20);
+/*!40000 ALTER TABLE `Conference_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Conferences`
+--
+
+DROP TABLE IF EXISTS `Conferences`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Conferences` (
+  `id_conf` int NOT NULL AUTO_INCREMENT,
+  `id_resp` int NOT NULL,
+  `nom` varchar(45) NOT NULL,
+  `date_clot_early` date NOT NULL,
+  `date_conf` date NOT NULL,
+  PRIMARY KEY (`id_conf`),
+  KEY `fk_Conferences_1_idx` (`id_resp`),
+  CONSTRAINT `fk_Conferences_1` FOREIGN KEY (`id_resp`) REFERENCES `Users` (`id_user`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Conferences`
+--
+
+LOCK TABLES `Conferences` WRITE;
+/*!40000 ALTER TABLE `Conferences` DISABLE KEYS */;
+INSERT INTO `Conferences` VALUES (1,32,'Conference','2020-02-02','2020-02-02');
+/*!40000 ALTER TABLE `Conferences` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Inscription`
+--
+
+DROP TABLE IF EXISTS `Inscription`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Inscription` (
+  `idInscription` int NOT NULL AUTO_INCREMENT,
+  `id_conf` int NOT NULL,
+  `id_type` int NOT NULL,
+  `is_early` tinyint NOT NULL,
+  `approved` tinyint NOT NULL,
+  `paid` tinyint NOT NULL,
+  PRIMARY KEY (`idInscription`),
+  KEY `fk_Inscription_1_idx` (`id_type`),
+  KEY `fk_Inscription_2_idx` (`id_conf`),
+  CONSTRAINT `fk_Inscription_1` FOREIGN KEY (`id_type`) REFERENCES `Conference_type` (`id_type`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `fk_Inscription_2` FOREIGN KEY (`id_conf`) REFERENCES `Conferences` (`id_conf`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Inscription`
+--
+
+LOCK TABLES `Inscription` WRITE;
+/*!40000 ALTER TABLE `Inscription` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Inscription` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Session`
 --
 
@@ -39,7 +128,7 @@ CREATE TABLE `Session` (
 
 LOCK TABLES `Session` WRITE;
 /*!40000 ALTER TABLE `Session` DISABLE KEYS */;
-INSERT INTO `Session` VALUES (32,'522cf914cdcb4a9bbcbb500f7e4161b8','2021-01-12 17:51:13',1),(32,'5b796c9fc47d45e9b8d824c6ea4a828e','2021-01-12 17:48:35',0),(32,'5e190d108d8844bcaaf893192a24fb1c','2021-01-12 17:50:56',0),(32,'757d38d55a5b4d4b8ef743fe139d6f43','2021-01-12 17:48:34',0),(32,'c519497eb8c34faa8fb52f0ae026f787','2021-01-12 17:52:39',1),(32,'cf2b919123ba45e2aebf98faf485747d','2021-01-12 17:48:29',0);
+INSERT INTO `Session` VALUES (32,'522cf914cdcb4a9bbcbb500f7e4161b8','2021-01-12 17:51:13',1),(32,'5b796c9fc47d45e9b8d824c6ea4a828e','2021-01-12 17:48:35',0),(32,'5e190d108d8844bcaaf893192a24fb1c','2021-01-12 17:50:56',0),(32,'757d38d55a5b4d4b8ef743fe139d6f43','2021-01-12 17:48:34',0),(32,'c519497eb8c34faa8fb52f0ae026f787','2021-01-12 17:52:39',1),(32,'cf2b919123ba45e2aebf98faf485747d','2021-01-12 17:48:29',0),(32,'df19444b333748008ec3342b2987e618','2021-01-18 15:40:03',1);
 /*!40000 ALTER TABLE `Session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -89,6 +178,7 @@ CREATE TABLE `Users` (
   `Mail` varchar(32) DEFAULT NULL,
   `Password` blob,
   `date_create` timestamp NULL DEFAULT NULL,
+  `is_staff` tinyint(3) unsigned zerofill DEFAULT NULL,
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `Mail` (`Mail`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
@@ -100,7 +190,7 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-INSERT INTO `Users` VALUES (20,'nedjam.t.salim@gmail.com',_binary '5f4dcc3b5aa765d61d8327deb882cf99','2021-01-11 12:07:38'),(32,'eatin.lham01@yandex.com',_binary '21232f297a57a5a743894a0e4a801fc3','2021-01-12 17:45:05');
+INSERT INTO `Users` VALUES (20,'nedjam.t.salim@gmail.com',_binary '5f4dcc3b5aa765d61d8327deb882cf99','2021-01-11 12:07:38',000),(32,'eatin.lham01@yandex.com',_binary '21232f297a57a5a743894a0e4a801fc3','2021-01-12 17:45:05',001);
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -113,4 +203,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-12 20:38:53
+-- Dump completed on 2021-01-18 18:26:40

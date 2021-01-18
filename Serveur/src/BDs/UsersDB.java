@@ -19,7 +19,7 @@ public class UsersDB {
         try (Connection conn = Database.getMySQLConnection();
              Statement statement = conn.createStatement()) {
             statement.execute("BEGIN");
-            String query = " insert into Users (Mail,Password,date_create)" + " values (?, md5(?), ?)";
+            String query = " insert into Users (Mail,Password,date_create, is_staff)" + " values (?, md5(?), ?, ?)";
             try (PreparedStatement preparedStmt = conn.prepareStatement(query)) {
 
                 Timestamp createDate = Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
@@ -27,6 +27,8 @@ public class UsersDB {
                 preparedStmt.setString(1, email);
                 preparedStmt.setString(2, password);
                 preparedStmt.setTimestamp(3, createDate);
+                preparedStmt.setBoolean(4, false);
+
 
                 if (preparedStmt.executeUpdate() == 0) {
                     statement.execute("ROLLBACK");

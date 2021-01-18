@@ -53,7 +53,10 @@ public class AuthsTools {
 
         return AuthsDB.isRoot(key);
     }
+    public static boolean isStaff(String key) throws SQLException {
 
+        return AuthsDB.isStaff(key);
+    }
     public static boolean disconnect(String key) throws SQLException {
 
         return AuthsDB.disconnect(key);

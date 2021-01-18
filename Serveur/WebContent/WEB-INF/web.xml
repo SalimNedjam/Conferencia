@@ -55,6 +55,12 @@
         <servlet-name>Reset</servlet-name>
         <servlet-class>Servlets.Reset</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Conferences</servlet-name>
+        <servlet-class>Servlets.Conferences</servlet-class>
+    </servlet>
+
+
 
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
@@ -76,7 +82,10 @@
         <servlet-name>Reset</servlet-name>
         <url-pattern>/Reset</url-pattern>
     </servlet-mapping>
-
+    <servlet-mapping>
+        <servlet-name>Conferences</servlet-name>
+        <url-pattern>/Conferences</url-pattern>
+    </servlet-mapping>
     <resource-env-ref>
         <resource-env-ref-name>jdbc/project</resource-env-ref-name>
         <resource-env-ref-type>javax.sql.DataSource</resource-env-ref-type>

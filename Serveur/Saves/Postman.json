@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "10792129-e222-451a-867a-76c00a4268eb",
+		"name": "PROJECTJEE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Requests",
+			"item": [
+				{
+					"name": "createUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/TwisterFinal/CreateUser?username=user6&password=password&mail=email6&nom=nom&prenom=prenom&date=2000-01-01&sexe=true",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"TwisterFinal",
+								"CreateUser"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "user6"
+								},
+								{
+									"key": "password",
+									"value": "password"
+								},
+								{
+									"key": "mail",
+									"value": "email6"
+								},
+								{
+									"key": "nom",
+									"value": "nom"
+								},
+								{
+									"key": "prenom",
+									"value": "prenom"
+								},
+								{
+									"key": "date",
+									"value": "2000-01-01"
+								},
+								{
+									"key": "sexe",
+									"value": "true"
+								}
+							]
+						},
+						"description": "CreateUser\nss"
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/TwisterFinal/Logout?key=key",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"TwisterFinal",
+								"Logout"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "key"
+								}
+							]
+						},
+						"description": "ss"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:8080/TwisterFinal/Login?user=1&password=password",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"TwisterFinal",
+								"Login"
+							],
+							"query": [
+								{
+									"key": "user",
+									"value": "1"
+								},
+								{
+									"key": "password",
+									"value": "password"
+								}
+							]
+						},
+						"description": "ss"
+					},
+					"response": []
+				},
+				{
+					"name": "getConferences",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getConferenceById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateConference",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/Project_war/Conferences?key=df19444b333748008ec3342b2987e618&op=conf&nom=Conference&date_clot_early=2020-02-02&date_conf=2020-02-02",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Project_war",
+								"Conferences"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618"
+								},
+								{
+									"key": "op",
+									"value": "conf"
+								},
+								{
+									"key": "nom",
+									"value": "Conference"
+								},
+								{
+									"key": "date_clot_early",
+									"value": "2020-02-02"
+								},
+								{
+									"key": "date_conf",
+									"value": "2020-02-02"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateTypeConference",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/Project_war/Conferences?key=df19444b333748008ec3342b2987e618&op=type&nom=Type1&tarif_early=10&tarif_late=20&id_conf=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Project_war",
+								"Conferences"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618"
+								},
+								{
+									"key": "op",
+									"value": "type"
+								},
+								{
+									"key": "nom",
+									"value": "Type1"
+								},
+								{
+									"key": "tarif_early",
+									"value": "10"
+								},
+								{
+									"key": "tarif_late",
+									"value": "20"
+								},
+								{
+									"key": "id_conf",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -323,4 +323,21 @@ public class AuthsDB {
         }
 
     }
+
+    public static boolean isStaff(String key) throws SQLException {
+        String query = " select * From Session s,Users u where s.key_session=?  and s.id_user=u.id_user";
+
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+            preparedStmt.setString(1, key);
+
+            ResultSet rs = preparedStmt.executeQuery();
+            if (rs.next()) {
+                return rs.getBoolean("is_staff");
+            }
+        }
+
+        return false;
+    }
 }
