@@ -18,13 +18,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:8080/TwisterFinal/CreateUser?username=user6&password=password&mail=email6&nom=nom&prenom=prenom&date=2000-01-01&sexe=true",
+							"raw": "localhost:8080/Project_war/CreateUser?username=user6&password=password&mail=email6&nom=nom&prenom=prenom&date=2000-01-01&sexe=true",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"TwisterFinal",
+								"Project_war",
 								"CreateUser"
 							],
 							"query": [
@@ -102,23 +102,28 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:8080/TwisterFinal/Login?user=1&password=password",
+							"raw": "http://localhost:8080/Project_war/Login?user=eatin.lham01@yandex.com&password=admin&root=true",
+							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"TwisterFinal",
+								"Project_war",
 								"Login"
 							],
 							"query": [
 								{
 									"key": "user",
-									"value": "1"
+									"value": "eatin.lham01@yandex.com"
 								},
 								{
 									"key": "password",
-									"value": "password"
+									"value": "admin"
+								},
+								{
+									"key": "root",
+									"value": "true"
 								}
 							]
 						},
@@ -128,11 +133,39 @@
 				},
 				{
 					"name": "getConferences",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
-							"raw": ""
+							"raw": "http://localhost:8080/Project_war/Conferences?key=df19444b333748008ec3342b2987e618",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Project_war",
+								"Conferences"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618"
+								}
+							]
 						}
 					},
 					"response": []
@@ -143,7 +176,26 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "http://localhost:8080/Project_war/Conferences?key=df19444b333748008ec3342b2987e618&id_conf=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Project_war",
+								"Conferences"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618"
+								},
+								{
+									"key": "id_conf",
+									"value": "1"
+								}
+							]
 						}
 					},
 					"response": []
@@ -154,7 +206,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/Project_war/Conferences?key=df19444b333748008ec3342b2987e618&op=conf&nom=Conference&date_clot_early=2020-02-02&date_conf=2020-02-02",
+							"raw": "http://localhost:8080/Project_war/Conferences?key=df19444b333748008ec3342b2987e618&op=conf&nom=Conference&date_clot_early=2020-02-02&date_conf=2020-02-02&field_set=1023",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -184,6 +236,10 @@
 								{
 									"key": "date_conf",
 									"value": "2020-02-02"
+								},
+								{
+									"key": "field_set",
+									"value": "1023"
 								}
 							]
 						}

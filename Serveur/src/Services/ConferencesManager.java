@@ -13,17 +13,20 @@ package Services;
 
 public class ConferencesManager {
 
-    public static JSONObject addConference(String key, String nom, String dateClotEarly, String dateConf) {
+    public static JSONObject addConference(String key, String nom, String dateClotEarly, String dateConf, String field_set) {
         Date date_clot_early, date_conf;
+        int fieldSet;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (key == null || nom == null || dateClotEarly == null || dateConf == null || key.equals("") || nom.equals("") || dateClotEarly.equals("") || dateConf.equals(""))
+        if (key == null || nom == null || dateClotEarly == null || dateConf == null || field_set == null
+                || key.equals("") || nom.equals("") || dateClotEarly.equals("") || dateConf.equals("") || field_set.equals(""))
             return ErrorJSON.serviceRefused("Erreur arguments", -1);
         try {
             try {
                 nom = nom.substring(0, 1).toUpperCase() + nom.substring(1).toLowerCase();
                 date_clot_early = new Date(sdf.parse(dateClotEarly).getTime());
                 date_conf = new Date(sdf.parse(dateConf).getTime());
+                fieldSet = Integer.parseInt(field_set);
 
             } catch (Exception e) {
                 return ErrorJSON.serviceRefused("Mauvais type d'arguments", -1);
@@ -34,7 +37,7 @@ public class ConferencesManager {
             if (!AuthsTools.isStaff(key))
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
-            if(ConferencesTools.addConference(key, nom, date_clot_early, date_conf))
+            if(ConferencesTools.addConference(key, nom, date_clot_early, date_conf, fieldSet))
                 return ErrorJSON.serviceAccepted();
             else
                 return ErrorJSON.serviceRefused("Problem du serveur", 2);

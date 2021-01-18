@@ -34,8 +34,8 @@ public class ConferencesDB {
             return rs.next();
         }
     }
-    public static Boolean addConference(String key, String nom, Date dateClotEarly, Date dateConf) throws SQLException {
-        String query = " insert into Conferences (id_resp, nom, date_clot_early, date_conf)" + " values (?, ?, ?, ?)";
+    public static Boolean addConference(String key, String nom, Date dateClotEarly, Date dateConf, int fieldSet) throws SQLException {
+        String query = " insert into Conferences (id_resp, nom, date_clot_early, date_conf, field_set)" + " values (?, ?, ?, ?, ?)";
 
         int userId = getUserIdFromKey(key);
         try (Connection conn = Database.getMySQLConnection();
@@ -45,6 +45,7 @@ public class ConferencesDB {
             preparedStmt.setString(2, nom);
             preparedStmt.setDate(3, dateClotEarly);
             preparedStmt.setDate(4, dateConf);
+            preparedStmt.setInt(5, fieldSet);
 
             if (preparedStmt.executeUpdate() > 0)
                 return true;
@@ -92,6 +93,7 @@ public class ConferencesDB {
                 conf.put("nom", rs.getString("nom"));
                 conf.put("date_clot_early", rs.getDate("date_clot_early"));
                 conf.put("date_conf", rs.getDate("date_conf"));
+                conf.put("field_set", rs.getInt("field_set"));
 
                 PreparedStatement preparedStmt2 = conn.prepareStatement(query2);
                 preparedStmt2.setInt(1, rs.getInt("id_conf"));
@@ -133,6 +135,7 @@ public class ConferencesDB {
                 conf.put("nom", rs.getString("nom"));
                 conf.put("date_clot_early", rs.getDate("date_clot_early"));
                 conf.put("date_conf", rs.getDate("date_conf"));
+                conf.put("field_set", rs.getInt("field_set"));
 
                 PreparedStatement preparedStmt2 = conn.prepareStatement(query2);
                 preparedStmt2.setInt(1, idC);
