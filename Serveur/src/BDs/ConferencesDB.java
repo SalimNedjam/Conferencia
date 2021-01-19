@@ -34,12 +34,13 @@ public class ConferencesDB {
             return rs.next();
         }
     }
-    public static Boolean addConference(String key, String nom, Date dateClotEarly, Date dateConf, int fieldSet) throws SQLException {
+    public static JSONObject addConference(String key, String nom, Date dateClotEarly, Date dateConf, int fieldSet) throws SQLException, JSONException {
         String query = " insert into Conferences (id_resp, nom, date_clot_early, date_conf, field_set)" + " values (?, ?, ?, ?, ?)";
+        JSONObject conf = new JSONObject();
 
         int userId = getUserIdFromKey(key);
         try (Connection conn = Database.getMySQLConnection();
-             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+             PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStmt.setInt(1, userId);
             preparedStmt.setString(2, nom);
@@ -47,12 +48,21 @@ public class ConferencesDB {
             preparedStmt.setDate(4, dateConf);
             preparedStmt.setInt(5, fieldSet);
 
-            if (preparedStmt.executeUpdate() > 0)
-                return true;
-            else
-                return false;
+            if (preparedStmt.executeUpdate() == 0)
+                throw new SQLException();
+
+            try (ResultSet generatedKeys = preparedStmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    conf.put("id_conf", generatedKeys.getLong(1));
+
+                }
+                else {
+                    throw new SQLException();
+                }
+            }
 
         }
+        return conf;
     }
 
     public static boolean addTypeConference(String nom, int idC, int early, int late) throws SQLException {

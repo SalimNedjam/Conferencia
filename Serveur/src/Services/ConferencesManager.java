@@ -37,14 +37,13 @@ public class ConferencesManager {
             if (!AuthsTools.isStaff(key))
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
-            if(ConferencesTools.addConference(key, nom, date_clot_early, date_conf, fieldSet))
-                return ErrorJSON.serviceAccepted();
-            else
-                return ErrorJSON.serviceRefused("Problem du serveur", 2);
+            return ConferencesTools.addConference(key, nom, date_clot_early, date_conf, fieldSet);
 
 
         } catch (SQLException e) {
             return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);
+        } catch (JSONException e) {
+            return ErrorJSON.serviceRefused("JSON ERROR " + e.getMessage(), 100);
         }
     }
 
