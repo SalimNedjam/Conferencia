@@ -41,12 +41,12 @@ public class Conferences extends HttpServlet {
                     json = ConferencesManager.addTypeConference(key, idConf, nom, tarifEarly, tarifLate);
                     break;
                 default:
-                    json = ErrorJSON.serviceRefused("Undifined Operation", 5);
+                    json = ErrorJSON.serviceRefused("Undefined Operation", 5);
                     break;
             }
 
         }else {
-            json = ErrorJSON.serviceRefused("Undifined Operation", 5);
+            json = ErrorJSON.serviceRefused("Undefined Operation", 5);
         }
         response.setContentType(" text / json ");
         PrintWriter out = response.getWriter();

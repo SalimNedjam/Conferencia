@@ -144,14 +144,14 @@ public class UsersDB {
 
 
 
-    public static int getUserId(String Username) throws SQLException {
-        String query = " select id_user From Users where Username=?";
+    public static int getUserId(String login) throws SQLException {
+        String query = " select id_user From Users where Mail=?";
 
         int userId = -1;
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
 
-            preparedStmt.setString(1, Username);
+            preparedStmt.setString(1, login);
 
             ResultSet rs = preparedStmt.executeQuery();
             if (rs.next())
@@ -160,6 +160,21 @@ public class UsersDB {
         }
         return userId;
 
+    }
+
+    public static boolean isAdmin(int userdId) throws SQLException {
+        String query = " select is_staff From Users where id_user=?";
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+            preparedStmt.setInt(1, userdId);
+
+            ResultSet rs = preparedStmt.executeQuery();
+            if (rs.next())
+                return rs.getInt("is_staff") == 2;
+
+        }
+        return false;
     }
 
     public static boolean sameUser(String key, int id) throws SQLException {

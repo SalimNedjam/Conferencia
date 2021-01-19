@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 class Header extends Component {
 
     render() {
-      console.log(this.props.user);
       return (
         <div>
           {this.props.user.admin && 
@@ -16,11 +15,13 @@ class Header extends Component {
             <div class="container-fluid">
               <a class="navbar-brand" onClick={() => window.location.href='/'}>Conferentia</a>
               <div class="d-flex">
-                <button 
-                  class="btn btn-link" 
-                  onClick={() => window.location.href = "/me"}>
-                  {this.props.user.firstName} {this.props.user.lastName} 
-                </button>
+                {!this.props.user.admin && 
+                  <button 
+                    class="btn btn-link" 
+                    onClick={() => window.location.href = "/me"}>
+                    {this.props.user.firstName} {this.props.user.lastName} 
+                  </button>
+                }
                 <button 
                   class="btn btn-outline-primary" 
                   onClick={() => window.location.href = "/logout"}>

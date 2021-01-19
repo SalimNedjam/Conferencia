@@ -11,11 +11,17 @@ public class UsersTools {
         return UsersDB.insertUser(password, email, nom, prenom, title, institution, address, zip, city, country, phone);
     }
 
-    public static boolean existUser(int idFriend) throws SQLException {
-        return UsersDB.existUser(idFriend);
+    public static boolean existUser(int userId) throws SQLException {
+        return UsersDB.existUser(userId);
     }
 
+    public static int getUserId(String login) throws SQLException {
+        return UsersDB.getUserId(login);
+    }
 
+    public static boolean isAdmin(int userId) throws SQLException {
+        return UsersDB.isAdmin(userId);
+    }
 
     public static boolean existEmail(String email) throws SQLException {
         return UsersDB.existEmail(email);

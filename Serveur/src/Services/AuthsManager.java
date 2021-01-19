@@ -19,9 +19,7 @@ public class AuthsManager {
             if (!UsersTools.existEmail(login))
                 return ErrorJSON.serviceRefused("Utilisateur introuvable", 1);
 
-
-            JSONObject o = AuthsTools.getUserInfosFromLogin(login);
-            int userId = o.getInt("user");
+            int userId = UsersTools.getUserId(login);
             if (!AuthsTools.passwordCheck(userId, password))
                 return ErrorJSON.serviceRefused("Mot de passe incorrect", 2);
 
@@ -30,11 +28,17 @@ public class AuthsManager {
             JSONObject json = new JSONObject();
             key = AuthsTools.insertSession(userId, root);
             json.put("id", userId);
-            json.put("nom", o.getString("nom"));
-            json.put("prenom", o.getString("prenom"));
             json.put("login", login);
             json.put("key", key);
+
+            if (!UsersTools.isAdmin(userId)) {
+                JSONObject o = AuthsTools.getUserInfosFromLogin(login);
+                json.put("nom", o.getString("nom"));
+                json.put("prenom", o.getString("prenom"));
+            }
+
             return json;
+
 
         } catch (JSONException e) {
             return ErrorJSON.serviceRefused("JSON ERROR " + e.getMessage(), 100);

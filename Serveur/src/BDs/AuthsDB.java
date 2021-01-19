@@ -62,12 +62,10 @@ public class AuthsDB {
 
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
-
             preparedStmt.setInt(1, idUser);
             preparedStmt.setString(2, password);
 
             ResultSet rs = preparedStmt.executeQuery();
-
             return rs.next();
 
 
@@ -99,29 +97,42 @@ public class AuthsDB {
 
     public static JSONObject getUserInfosFromKey(String key) throws SQLException, JSONException {
         int userId = -1;
+
         JSONObject o = new JSONObject();
-        String query = " select * From Session s,Users u ,UserInfos i where s.key_session=? and s.id_user=i.id_user and s.id_user=u.id_user";
+        String query;
+        if (getStaffStatus(key) == 2) {
+            query = " select * From Session s,Users u where s.key_session=? and s.id_user=u.id_user";
 
-        try (Connection conn = Database.getMySQLConnection();
-             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
-
-            preparedStmt.setString(1, key);
-
-            ResultSet rs = preparedStmt.executeQuery();
-            if (rs.next()) {
-                userId = rs.getInt("id_user");
-                o.put("nom", rs.getString("nom"));
-                o.put("prenom", rs.getString("prenom"));
-                o.put("login", rs.getString("Mail"));
+            try (Connection conn = Database.getMySQLConnection();
+                 PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+                preparedStmt.setString(1, key);
+                ResultSet rs = preparedStmt.executeQuery();
+                if (rs.next()) {
+                    userId = rs.getInt("id_user");
+                    o.put("login", rs.getString("Mail"));
+                    o.put("is_staff", rs.getInt("is_staff"));
+                }
+                o.put("user", userId);
             }
-            o.put("user", userId);
+        } else {
+            query = " select * From Session s,Users u ,UserInfos i where s.key_session=? and s.id_user=i.id_user and s.id_user=u.id_user";
 
-
+            try (Connection conn = Database.getMySQLConnection();
+                 PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+                preparedStmt.setString(1, key);
+                ResultSet rs = preparedStmt.executeQuery();
+                if (rs.next()) {
+                    userId = rs.getInt("id_user");
+                    o.put("nom", rs.getString("nom"));
+                    o.put("prenom", rs.getString("prenom"));
+                    o.put("login", rs.getString("Mail"));
+                    o.put("is_staff", rs.getInt("is_staff"));
+                }
+                o.put("user", userId);
+            }
         }
 
-
         return o;
-
     }
 
     public static JSONObject getUserInfosFromLogin(String login) throws SQLException, JSONException {
@@ -324,9 +335,10 @@ public class AuthsDB {
 
     }
 
-    public static boolean isStaff(String key) throws SQLException {
+    public static int getStaffStatus(String key) throws SQLException {
         String query = " select * From Session s,Users u where s.key_session=?  and s.id_user=u.id_user";
 
+        int status = 0;
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
 
@@ -334,10 +346,10 @@ public class AuthsDB {
 
             ResultSet rs = preparedStmt.executeQuery();
             if (rs.next()) {
-                return rs.getBoolean("is_staff");
+                status = rs.getInt("is_staff");
             }
         }
 
-        return false;
+        return status;
     }
 }

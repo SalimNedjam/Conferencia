@@ -19,8 +19,8 @@ public class UsersManager {
                 || address.equals("") || zip.equals("") || city.equals("") || country.equals("") || phone.equals("") )
             return ErrorJSON.serviceRefused("Erreur arguments", -1);
         try {
-            nom = nom.substring(0, 1).toUpperCase() + nom.substring(1).toLowerCase();
-            prenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1).toLowerCase();
+            nom = nom.substring(0, 1).toUpperCase() + nom.substring(1);
+            prenom = prenom.substring(0, 1).toUpperCase() + prenom.substring(1);
             institution = institution.substring(0, 1).toUpperCase() + institution.substring(1).toLowerCase();
             address = address.substring(0, 1).toUpperCase() + address.substring(1).toLowerCase();
             city = city.substring(0, 1).toUpperCase() + city.substring(1).toLowerCase();

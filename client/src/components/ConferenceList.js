@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import axios from 'axios';
+import {read_cookie} from 'sfcookies';
 
 const DATA = [
 	{
@@ -32,24 +33,25 @@ export default class Accueil extends Component {
 
 
 	componentDidMount() {
-		// axios.get("http://localhost:8080/TwisterFinal/Messages?" + params)
-		// .then(res => {
-		//     this.setState(() => {
-		//         return {data: res.data.Array};
-		//     });
+		const params = new URLSearchParams();
+		params.append('key', read_cookie("key"));
 
-		// });
+		axios.get("http://localhost:8080/Project_war/Conferences?" + params)
+		.then(res => {
+		    this.setState({data: res.data.Conferences});
+		});
 	}
 
 	renderItem(item) {
 		return (
-			<a href="#" class="list-group-item list-group-item-action" aria-current="true">
+			<a href={"/conf/" + item.id_conf} class="list-group-item list-group-item-action" aria-current="true">
 				<div class="d-flex w-100 justify-content-between">
-					<h5 class="mb-1">{item.name}</h5>
-					<small>{item.date}</small>
+					<h4 class="mb-1">{item.nom}</h4>
+					<small>{item.types.length} types d'inscriptions</small>
 				</div>
-				<p class="mb-1">{item.description}</p>
-				<small>${item.minPrice} - ${item.maxPrice}</small>
+				<p class="mb-1">Description</p>
+				<small>Fin early  {item.date_clot_early}</small><br></br>
+				<small>Le {item.date_conf}</small>
 			</a>
 		)
 	}
@@ -63,7 +65,10 @@ export default class Accueil extends Component {
 	}
 
 	render() {
-		let data = DATA;
+		let data = this.state.data;
+		if (!data) return (
+			<div/>
+		)
 		if (this.props.filter != 'all') {
 			data = data.filter((item) => {
 				return item[this.props.filter] !== undefined;
@@ -71,7 +76,16 @@ export default class Accueil extends Component {
 		}
 		return (
 			<div class="list-group mb-3">
-				<h3 class="mb-2">{this.props.title}</h3>
+				<div class="d-flex flex-row justify-content-between pb-2">
+					<h3 class="mb-2">{this.props.title}</h3>
+					{this.props.button && this.props.button.title && 
+						<button 
+							class="btn btn-outline-primary" 
+							onClick={this.props.button.onClick}>
+							{this.props.button.title}
+						</button>
+					}
+				</div>
 				{data.map((item) => this.renderItem(item))}
 				{data.length == 0 && this.renderEmpty()}
 			</div>

@@ -19,6 +19,7 @@ import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import NewConference from './pages/NewConference';
+import Conference from './pages/Conference';
 
 class App extends Component {
 
@@ -42,7 +43,7 @@ class App extends Component {
 		const keySession = read_cookie("key");
 		if (keySession !== "") {
 			const params = new URLSearchParams();
-			params.append('key', read_cookie("key"));
+			params.append('key', keySession);
 			axios.post("http://localhost:8080/Project_war/Login", params)
 			.then(res => {
 				if (res.data.code === undefined) {
@@ -50,7 +51,9 @@ class App extends Component {
 						key: keySession,
 						login: res.data.login,
 						id: res.data.user,
-						admin: res.data.admin,
+						isStaff: res.data.is_staff >= 1,
+						admin: res.data.is_staff == 2,
+						responsable: res.data.is_staff == 1,
 						firstName: res.data.prenom,
 						lastName: res.data.nom,
 					});
@@ -66,7 +69,7 @@ class App extends Component {
 		const keySession = read_cookie("key");
 		if (keySession !== "") {
 			const params = new URLSearchParams();
-			params.append('key', read_cookie("key"));
+			params.append('key', keySession);
 			axios.post("http://localhost:8080/Project_war/Login", params)
 				.then(res => {
 					if (res.data.code !== undefined) {
@@ -100,12 +103,15 @@ class App extends Component {
 						<Route path="/me">
 							<Profile/>
 						</Route>
-						<Route path="/new">
-							<NewConference/>
-						</Route>
 						<Route path="/logout">
 							<Logout/>
 						</Route>
+						{this.props.user.isStaff ? 
+							<Route path="/new" component={NewConference}/> : 
+							<Redirect from="/new" to="/"/>
+						}
+						<Route path="/new" component={NewConference}/>
+						<Route path="/conf/:id" component={Conference}/>
 						<Route path="/">
 							<Home/>
 							<Redirect to="/" />

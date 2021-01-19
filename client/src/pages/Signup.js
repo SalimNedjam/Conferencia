@@ -13,7 +13,7 @@ const FORM = {
         name: 'pass',
         type: 'password',
         label: "Mot de passe",
-        minLength: 6,
+        minLength: 5,
     },
     confirmPassword: {
         verify: 'password',
@@ -21,7 +21,7 @@ const FORM = {
         name: 'confirmPass',
         type: 'password',
         label: "Confirmation du mot de passe",
-        minLength: 6,
+        minLength: 5,
     },
     title: {
         mandatory: true,

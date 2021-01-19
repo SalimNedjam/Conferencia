@@ -9,7 +9,6 @@ import java.util.UUID;
 
 public class AuthsTools {
     public static boolean passwordCheck(int idU, String password) throws SQLException {
-
         return AuthsDB.passwordCheck(idU, password);
     }
 
@@ -54,8 +53,7 @@ public class AuthsTools {
         return AuthsDB.isRoot(key);
     }
     public static boolean isStaff(String key) throws SQLException {
-
-        return AuthsDB.isStaff(key);
+        return AuthsDB.getStaffStatus(key) >= 1;
     }
     public static boolean disconnect(String key) throws SQLException {
 
