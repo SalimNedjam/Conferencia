@@ -39,4 +39,13 @@ public class ConferencesTools {
         return ConferencesDB.getConferenceById(idC);
 
     }
+
+    public static boolean isConfValid(int idConf) throws SQLException{
+        return ConferencesDB.isConfValid(idConf);
+
+    }
+    public static boolean isEarly(int idConf) throws SQLException{
+        return ConferencesDB.isEarly(idConf);
+
+    }
 }

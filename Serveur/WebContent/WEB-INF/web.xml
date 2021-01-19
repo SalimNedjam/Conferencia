@@ -59,7 +59,10 @@
         <servlet-name>Conferences</servlet-name>
         <servlet-class>Servlets.Conferences</servlet-class>
     </servlet>
-
+    <servlet>
+        <servlet-name>Inscriptions</servlet-name>
+        <servlet-class>Servlets.Inscriptions</servlet-class>
+    </servlet>
 
 
     <servlet-mapping>
@@ -85,6 +88,10 @@
     <servlet-mapping>
         <servlet-name>Conferences</servlet-name>
         <url-pattern>/Conferences</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Inscriptions</servlet-name>
+        <url-pattern>/Inscriptions</url-pattern>
     </servlet-mapping>
     <resource-env-ref>
         <resource-env-ref-name>jdbc/project</resource-env-ref-name>

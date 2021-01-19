@@ -252,7 +252,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/Project_war/Conferences?key=df19444b333748008ec3342b2987e618&op=type&nom=Type1&tarif_early=10&tarif_late=20&id_conf=1",
+							"raw": "http://localhost:8080/Project_war/Conferences?key=df19444b333748008ec3342b2987e618&op=type&nom=Type1&tarif_early=10&tarif_late=20&id_conf=3",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -285,7 +285,235 @@
 								},
 								{
 									"key": "id_conf",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateInscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/Project_war/Inscriptions?key=df19444b333748008ec3342b2987e618&id_conf=3&id_type=4&op=subscribe",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Project_war",
+								"Inscriptions"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618"
+								},
+								{
+									"key": "id_conf",
+									"value": "3"
+								},
+								{
+									"key": "id_type",
+									"value": "4"
+								},
+								{
+									"key": "op",
+									"value": "subscribe"
+								},
+								{
+									"key": "date_conf",
+									"value": "2020-02-02",
+									"disabled": true
+								},
+								{
+									"key": "field_set",
+									"value": "1023",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getInscriptionSelf",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/Project_war/Inscriptions?key=df19444b333748008ec3342b2987e618",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Project_war",
+								"Inscriptions"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getInscriptionResponsable",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/Project_war/Inscriptions?key=df19444b333748008ec3342b2987e618&id_conf=3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Project_war",
+								"Inscriptions"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618"
+								},
+								{
+									"key": "id_conf",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "approveInscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/Project_war/Inscriptions?key=df19444b333748008ec3342b2987e618&id_insc=1&op=approve",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Project_war",
+								"Inscriptions"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618"
+								},
+								{
+									"key": "id_insc",
 									"value": "1"
+								},
+								{
+									"key": "op",
+									"value": "approve"
+								},
+								{
+									"key": "op",
+									"value": "subscribe",
+									"disabled": true
+								},
+								{
+									"key": "date_conf",
+									"value": "2020-02-02",
+									"disabled": true
+								},
+								{
+									"key": "field_set",
+									"value": "1023",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "disapproveInscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/Project_war/Inscriptions?key=df19444b333748008ec3342b2987e618&id_insc=1&op=approve",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"Project_war",
+								"Inscriptions"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "df19444b333748008ec3342b2987e618"
+								},
+								{
+									"key": "id_insc",
+									"value": "1"
+								},
+								{
+									"key": "op",
+									"value": "approve"
+								},
+								{
+									"key": "op",
+									"value": "subscribe",
+									"disabled": true
+								},
+								{
+									"key": "date_conf",
+									"value": "2020-02-02",
+									"disabled": true
+								},
+								{
+									"key": "field_set",
+									"value": "1023",
+									"disabled": true
 								}
 							]
 						}

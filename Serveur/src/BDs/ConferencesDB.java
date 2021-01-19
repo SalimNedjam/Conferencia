@@ -157,4 +157,49 @@ public class ConferencesDB {
         }
         return conf;
     }
+
+
+    public static boolean isConfValid(int idC) throws SQLException {
+        String query = " select * From Conferences c where c.id_conf = ?";
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+            preparedStmt.setInt(1, idC);
+
+            ResultSet rs = preparedStmt.executeQuery();
+
+            if (rs.next()) {
+
+
+                Timestamp timeNow = Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
+                if (timeNow.getTime() - rs.getDate("date_conf").getTime() < 0)
+                    return true;
+
+            }
+            return false;
+
+        }
+    }
+
+    public static boolean isEarly(int idC) throws SQLException {
+        String query = " select * From Conferences c where c.id_conf = ?";
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+            preparedStmt.setInt(1, idC);
+
+            ResultSet rs = preparedStmt.executeQuery();
+
+            if (rs.next()) {
+
+
+                Timestamp timeNow = Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
+                if (timeNow.getTime() - rs.getDate("date_clot_early").getTime() < 0)
+                    return true;
+
+            }
+            return false;
+
+        }
+    }
 }

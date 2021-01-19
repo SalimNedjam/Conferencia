@@ -118,9 +118,6 @@ public class ConferencesManager {
             return ErrorJSON.serviceRefused("JSON ERROR " + e.getMessage(), 100);
         }
     }
-    public static JSONObject getConference(String key, String idConf) {
-        return new JSONObject();
-    }
 
 
 }
