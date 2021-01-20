@@ -67,7 +67,7 @@ public class InscriptionsManager {
             if (!ConferencesTools.isResponsable(key, idC))
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
-            return new JSONObject().put("Inscriptions", InscriptionsTools.getAllInscriptions(idC));
+            return new JSONObject().put("inscriptions", InscriptionsTools.getAllInscriptions(idC));
 
         } catch (SQLException e) {
             return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);
@@ -87,7 +87,7 @@ public class InscriptionsManager {
                 return ErrorJSON.serviceRefused("Clé invalide", 1);
 
 
-            return new JSONObject().put("Inscriptions", InscriptionsTools.getInscriptionsByUser(key));
+            return new JSONObject().put("inscriptions", InscriptionsTools.getInscriptionsByUser(key));
 
         } catch (SQLException e) {
             return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);

@@ -2,52 +2,51 @@ import React, {Component} from "react";
 import axios from 'axios';
 import {read_cookie} from 'sfcookies';
 
-const DATA = [
-	{
-		name: "Conférence 1",
-		date: "20/01/2020",
-		description: "Description de la conférence ...",
-		minPrice: 100,
-		maxPrice: 250,
-		pending: true,
-	},
-	{
-		name: "Conférence 2",
-		date: "25/01/2020",
-		description: "Description de la conférence ...",
-		minPrice: 180,
-		maxPrice: 450,
-	}
-]
-
-export default class Accueil extends Component {
+export default class ConferenceList extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
-				data: null
+				data: null,
+				inscriptions: [],
 		};
-
-		this.componentDidMount = this.componentDidMount.bind(this);
 	}
 
 
 	componentDidMount() {
-		const params = new URLSearchParams();
+		let params = new URLSearchParams();
 		params.append('key', read_cookie("key"));
 
 		axios.get("http://localhost:8080/Project_war/Conferences?" + params)
 		.then(res => {
-		    this.setState({data: res.data.Conferences});
+			if (res.data.code === undefined) {
+		    this.setState({data: res.data.conferences});
+			}
+		});
+
+		params = new URLSearchParams();
+		params.append('key', read_cookie("key"));
+
+		axios.get("http://localhost:8080/Project_war/Inscriptions?" + params)
+		.then(res => {
+			if (res.data.code === undefined) {
+				this.setState({inscriptions: res.data.inscriptions});
+			}
 		});
 	}
 
 	renderItem(item) {
+		const {inscriptions} = this.state;
+		if (!inscriptions) return;
+		const subscribed = inscriptions.findIndex((value) => value.id_conf == item.id_conf) >= 0;
 		return (
-			<a href={"/conf/" + item.id_conf} class="list-group-item list-group-item-action" aria-current="true">
+			<a href={"/conf/" + item.id_conf} class="list-group-item list-group-item-action" aria-current="true" key={item.id_conf}>
 				<div class="d-flex w-100 justify-content-between">
 					<h4 class="mb-1">{item.nom}</h4>
-					<small>{item.types.length} types d'inscriptions</small>
+					{subscribed ?
+						<div><span class="badge bg-primary">Inscrit</span></div> :
+						<small>{item.types.length} types d'inscriptions</small>
+					}	
 				</div>
 				<p class="mb-1">Description</p>
 				<small>Fin early  {item.date_clot_early}</small><br></br>
@@ -67,7 +66,7 @@ export default class Accueil extends Component {
 	render() {
 		let data = this.state.data;
 		if (!data) return (
-			<div/>
+			<div>prout</div>
 		)
 		if (this.props.filter != 'all') {
 			data = data.filter((item) => {

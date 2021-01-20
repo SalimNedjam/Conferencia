@@ -196,7 +196,7 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
-INSERT INTO `Users` VALUES (20,'nedjam.t.salim@gmail.com',_binary '5f4dcc3b5aa765d61d8327deb882cf99','2021-01-11 12:07:38',000),(32,'eatin.lham01@yandex.com',_binary '21232f297a57a5a743894a0e4a801fc3','2021-01-12 17:45:05',001);
+INSERT INTO `Users` VALUES (20,'nedjam.t.salim@gmail.com',_binary '5f4dcc3b5aa765d61d8327deb882cf99','2021-01-11 12:07:38',000),(32,'eatin.lham01@yandex.com',_binary '21232f297a57a5a743894a0e4a801fc3','2021-01-12 17:45:05',001),(0,'admin@conferentia.fr',_binary '21232f297a57a5a743894a0e4a801fc3','2021-01-00 00:00:00',002);
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

@@ -3,28 +3,27 @@ import {connect} from "react-redux";
 
 import Header from '../components/Header';
 import ConferenceList from '../components/ConferenceList';
+import InscriptionList from '../components/InscriptionList';
+import ConferencesOverview from '../components/ConferencesOverview';
 
 class Home extends Component {
 
-	renderMyConf() {
+	renderMyInscriptions() {
 		if (!this.props.user.admin) {
 			return (
 				<div class="flex-fill m-2">
-					<ConferenceList title="En attente" filter='pending'/>
-					<ConferenceList title="Inscrit" filter='validate'/>
+					<InscriptionList/>
 				</div>
 			)
 		}
 	}
 
-	renderInscriptionsToValid() {
-		if (this.props.user.admin) {
-			return (
-				<div class="flex-fill m-2">
-					<ConferenceList title="À valider" filter='pending'/>
-				</div>
-			)
-		}
+	renderMyConf() {
+		if (this.props.user.responsable) return (
+			<div>
+				<ConferencesOverview/>
+			</div>
+		)
 	}
 
 	renderAllConf() {
@@ -38,13 +37,11 @@ class Home extends Component {
 			}
 		}
 		return (
-			<div class="flex-fill m-2">
-				<ConferenceList 
+				<ConferenceList
 					title="Toutes les conférences" 
 					filter='all'
 					button={button}
 				/>
-			</div>
 		)
 	}
 
@@ -53,9 +50,11 @@ class Home extends Component {
 		<div>
 			<Header/>
 			<div class="container-sm mt-5 d-flex">
-				{this.renderMyConf()}
-				{this.renderInscriptionsToValid()}
-				{this.renderAllConf()}
+				{this.renderMyInscriptions()}
+				<div class="flex-fill m-2">
+					{this.renderMyConf()}
+					{this.renderAllConf()}
+				</div>
 			</div>
 		</div>
 		)

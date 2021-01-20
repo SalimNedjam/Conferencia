@@ -91,7 +91,7 @@ public class ConferencesManager {
             if (!AuthsTools.isKeyValid(key))
                 return ErrorJSON.serviceRefused("Clé invalide", 1);
 
-            return new JSONObject().put("Conferences", ConferencesTools.getAllConference());
+            return new JSONObject().put("conferences", ConferencesTools.getAllConference());
         } catch (SQLException e) {
             return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);
         }catch (JSONException e) {
