@@ -34,7 +34,7 @@ public class ConferencesDB {
             return rs.next();
         }
     }
-    public static JSONObject addConference(int userId, String nom, Date dateClotEarly, Date dateConf, int fieldSet, String description) throws SQLException, JSONException {
+    public static JSONObject addConference(int userId, String[] types, String nom, Date dateClotEarly, Date dateConf, int fieldSet, String description) throws SQLException, JSONException {
         String query = " insert into Conferences (id_resp, nom, date_clot_early, date_conf, field_set, description)" + " values (?, ?, ?, ?, ?, ?)";
         JSONObject conf = new JSONObject();
 
@@ -53,8 +53,15 @@ public class ConferencesDB {
 
             try (ResultSet generatedKeys = preparedStmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    conf.put("id_conf", generatedKeys.getLong(1));
-
+                    int conf_id = (int) generatedKeys.getLong(1);
+                    conf.put("id_conf", conf_id);
+                    for (String type : types) {
+                        String[] args = type.split("\\;", -1);
+                        int early, late;
+                        early = Integer.parseInt(args[1]);
+                        late = Integer.parseInt(args[2]);
+                        addTypeConference(args[0], conf_id, early, late);
+                    }
                 }
                 else {
                     throw new SQLException();

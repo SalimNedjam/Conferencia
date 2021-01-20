@@ -51,9 +51,7 @@ class App extends Component {
 						key: keySession,
 						login: res.data.login,
 						id: res.data.user,
-						isStaff: res.data.is_staff >= 1,
-						admin: res.data.is_staff == 2,
-						responsable: res.data.is_staff == 1,
+						admin: res.data.is_staff > 0,
 						firstName: res.data.prenom,
 						lastName: res.data.nom,
 					});
@@ -106,7 +104,7 @@ class App extends Component {
 						<Route path="/logout">
 							<Logout/>
 						</Route>
-						{this.props.user.isStaff ? 
+						{this.props.user.admin ? 
 							<Route path="/new" component={NewConference}/> : 
 							<Redirect from="/new" to="/"/>
 						}

@@ -15,18 +15,20 @@ package Services;
 
 public class ConferencesManager {
 
-    public static JSONObject addConference(String key, String nom, String dateClotEarly, String dateConf, String field_set, String description, String email) {
+    public static JSONObject addConference(String key, String[] types, String nom, String dateClotEarly, String dateConf, String field_set, String description, String email) {
         Date date_clot_early, date_conf;
         int fieldSet;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (key == null || nom == null || dateClotEarly == null || dateConf == null || field_set == null || description == null || email == null
-                || key.equals("") || nom.equals("") || dateClotEarly.equals("") || dateConf.equals("") || field_set.equals("") || description.equals("") || email.equals(""))
+        if (key == null || nom == null || dateClotEarly == null || dateConf == null || field_set == null || email == null
+                || key.equals("") || nom.equals("") || dateClotEarly.equals("") || dateConf.equals("") || field_set.equals("") || email.equals(""))
             return ErrorJSON.serviceRefused("Erreur arguments", -1);
         try {
             try {
                 nom = nom.substring(0, 1).toUpperCase() + nom.substring(1).toLowerCase();
-                description = description.substring(0, 1).toUpperCase() + description.substring(1);
+                if (description == null) {
+                    description = "";
+                }
 
                 date_clot_early = new Date(sdf.parse(dateClotEarly).getTime());
                 date_conf = new Date(sdf.parse(dateConf).getTime());
@@ -40,8 +42,12 @@ public class ConferencesManager {
             if (!AuthsTools.isStaff(key))
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
+            int resp_id = getIdFromEmail(email);
+            if (resp_id == -1) {
+                return ErrorJSON.serviceRefused("Utilisateur " + email + " inexistant", 2);
+            }
 
-            return ConferencesTools.addConference(getIdFromEmail(email), nom, date_clot_early, date_conf, fieldSet, description);
+            return ConferencesTools.addConference(resp_id, types, nom, date_clot_early, date_conf, fieldSet, description);
 
 
         } catch (SQLException e) {

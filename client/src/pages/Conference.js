@@ -139,13 +139,20 @@ class Conference extends Component {
                     </tr>
                 </thead>
 				{inscriptions.map((inscription, index) => {
-					const statut = 0;
+					let statut;
+					if (inscription.approved == 0 && inscription.paid == 0) {
+						statut = "En attente de validation";
+					} else if (inscription.approved == 1 && inscription.paid == 0) {
+						statut = "Validé";
+					} else if (inscription.paid == 1) {
+						statut = "Payé";
+					}
 					return (
 						<tbody>
 							<tr>
-								<td>{inscription.id_user}</td>
-								<td>{inscription.id_type}</td>
-								<td>{statut}</td>
+								<td class="align-middle">{inscription.mail}</td>
+								<td class="align-middle">{inscription.nom} -- {inscription.tarif_early}€</td>
+								<td class="align-middle">{statut}</td>
 								<td>
 									<button 
 										type="button"
@@ -180,9 +187,9 @@ class Conference extends Component {
 		const {conf, loading} = this.state;
 		if (conf.id_resp == this.props.user.id && !this.props.user.admin)	return (
 			<fieldset disabled={loading}>
-					<div class="alert alert-primary p-2" role="alert">
-						Vous êtes le responsable de cette conférence
-					</div>
+				<div class="alert alert-primary p-2" role="alert">
+					Vous êtes le responsable de cette conférence
+				</div>
 				<div class="d-flex flex-row">
 					{this.renderListInscriptions()}
 				</div>
@@ -192,10 +199,11 @@ class Conference extends Component {
 
 	renderConf() {
 		const {conf} = this.state;
+		console.log(conf);
 		if (conf) return (
 			<div class="box container box-md mt-5 p-3">
 				<h2>{conf.nom}</h2>
-				<p>Description</p>
+				<p>{conf.description}</p>
 				<p><strong>Date de fin période early:</strong> {conf.date_clot_early}</p>
 				<p><strong>Date de la conférence:</strong> {conf.date_conf}</p>
 				<hr></hr>

@@ -18,14 +18,6 @@ class Home extends Component {
 		}
 	}
 
-	renderMyConf() {
-		if (this.props.user.responsable) return (
-			<div>
-				<ConferencesOverview/>
-			</div>
-		)
-	}
-
 	renderAllConf() {
 		let button = {};
 		if (this.props.user.admin) {
@@ -52,7 +44,7 @@ class Home extends Component {
 			<div class="container-sm mt-5 d-flex">
 				{this.renderMyInscriptions()}
 				<div class="flex-fill m-2">
-					{this.renderMyConf()}
+					<ConferencesOverview/>
 					{this.renderAllConf()}
 				</div>
 			</div>

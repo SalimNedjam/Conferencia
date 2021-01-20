@@ -23,6 +23,12 @@ const FORM = {
         type: 'date',
         label: "Date de la conférence",
     },
+    email: {
+        mandatory: true,
+        name: 'resp-mail',
+        type: 'email',
+        label: "Adresse mail du responsable de la conférence",
+    },
     description: {
         name: 'date-conf',
         type: 'textarea',
@@ -35,6 +41,7 @@ const FORM = {
         values: {
             mail: {
                 index: 0,
+                lock: true,
                 label: "Adresse mail",
             },
             title: {
@@ -111,27 +118,24 @@ export default class NewConference extends Component {
                     value = this.bitsetToInt(value);
                 }
                 params.append(index, value);
-                //console.log(index, value);
+                console.log(index, value);
             }
             
-            params.append("op", "conf");
             params.append("key", read_cookie("key"));
+            let types = [];
+            for (let t of this.state.types) {
+                types.push(`${t.name};${t.early};${t.late}`);
+            }
+            types = types.join("&");
+            params.append("types", types);
+
 			this.setState({loading: true});
 
             axios.post("http://localhost:8080/Project_war/Conferences", params)
             .then(res => {
                 console.log(res);
                 if (res.data.code === undefined) {
-                    window.location.href = "/conf/";
-                    // this.state.types.map((type) => {
-                    //     const params = new URLSearchParams();
-
-                    //     axios.post("http://localhost:8080/Project_war/Conferences", params)
-                    //     .then(res => {
-
-                    //     })
-                    // });
-
+                    window.location.href = "/conf/" + res.data.id_conf;
                 } else {
                     let errors = {};
                     errors["serverError"] = res.data.message;
@@ -220,6 +224,7 @@ export default class NewConference extends Component {
                                 <label>
                                     <input 
                                         type="checkbox" 
+                                        disabled={item.values[field].lock}
                                         defaultChecked={this.inputs[index].value[item.values[field].index]}
                                         class="form-check-input"
                                         onChange={(e) => {
@@ -281,9 +286,9 @@ export default class NewConference extends Component {
                 {types.map((type, index) => (
                     <tbody>
                         <tr>
-                            <td>{type.name}</td>
-                            <td>{type.early}</td>
-                            <td>{type.late}</td>
+                            <td class="align-middle">{type.name}</td>
+                            <td class="align-middle">{type.early}</td>
+                            <td class="align-middle">{type.late}</td>
                             <td>
                                 <button 
                                     type="button"

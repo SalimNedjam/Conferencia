@@ -20,36 +20,18 @@ public class Conferences extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        String operation = request.getParameter("op");
         String nom = request.getParameter("nom");
         String field_set = request.getParameter("field_set");
         String description = request.getParameter("description");
         String email = request.getParameter("email");
-
+        String[] types = request.getParameter("types").split("\\&", -1);
         String dateClotEarly = request.getParameter("date_clot_early");
         String dateConf = request.getParameter("date_conf");
-        String idConf = request.getParameter("id_conf");
-        String tarifEarly = request.getParameter("tarif_early");
-        String tarifLate = request.getParameter("tarif_late");
-
         String key = request.getParameter("key");
         JSONObject json;
-        if(operation != null) {
-            switch (operation) {
-                case "conf":
-                    json = ConferencesManager.addConference(key, nom, dateClotEarly, dateConf, field_set, description, email);
-                    break;
-                case "type":
-                    json = ConferencesManager.addTypeConference(key, idConf, nom, tarifEarly, tarifLate);
-                    break;
-                default:
-                    json = ErrorJSON.serviceRefused("Undefined Operation", 5);
-                    break;
-            }
 
-        }else {
-            json = ErrorJSON.serviceRefused("Undefined Operation", 5);
-        }
+        json = ConferencesManager.addConference(key, types, nom, dateClotEarly, dateConf, field_set, description, email);
+
         response.setContentType(" text / json ");
         PrintWriter out = response.getWriter();
         out.println(json);
