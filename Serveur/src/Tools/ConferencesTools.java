@@ -14,9 +14,9 @@ public class ConferencesTools {
 
 
 
-    public static JSONObject addConference(String key, String nom, Date dateClotEarly, Date dateConf, int fieldSet) throws SQLException, JSONException {
+    public static JSONObject addConference(int id, String nom, Date dateClotEarly, Date dateConf, int fieldSet, String description) throws SQLException, JSONException {
 
-        return ConferencesDB.addConference(key, nom, dateClotEarly, dateConf, fieldSet);
+        return ConferencesDB.addConference(id, nom, dateClotEarly, dateConf, fieldSet, description);
     }
 
     public static boolean addTypeConference(String nom, int idC, int early, int late)  throws SQLException {
@@ -48,4 +48,6 @@ public class ConferencesTools {
         return ConferencesDB.isEarly(idConf);
 
     }
+
+
 }

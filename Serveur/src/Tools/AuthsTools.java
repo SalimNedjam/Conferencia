@@ -25,8 +25,8 @@ public class AuthsTools {
         return AuthsDB.getUserInfosFromLogin(login);
     }
 
-    public static String getLoginFromId(int idUser) throws SQLException {
-        return AuthsDB.getLoginFromId(idUser);
+    public static int getIdFromEmail(String mail) throws SQLException {
+        return AuthsDB.getIdFromEmail(mail);
     }
 
 

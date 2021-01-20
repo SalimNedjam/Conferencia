@@ -58,10 +58,11 @@ CREATE TABLE `Conferences` (
   `date_clot_early` date NOT NULL,
   `date_conf` date NOT NULL,
   `field_set` int NOT NULL,
+  `description` varchar(256) NOT NULL,
   PRIMARY KEY (`id_conf`),
   KEY `fk_Conferences_1_idx` (`id_resp`),
   CONSTRAINT `fk_Conferences_1` FOREIGN KEY (`id_resp`) REFERENCES `Users` (`id_user`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +71,7 @@ CREATE TABLE `Conferences` (
 
 LOCK TABLES `Conferences` WRITE;
 /*!40000 ALTER TABLE `Conferences` DISABLE KEYS */;
-INSERT INTO `Conferences` VALUES (1,32,'Conference','2020-02-02','2020-02-02',0),(2,32,'Conference','2020-02-02','2020-02-02',1023),(3,32,'Conference','2021-02-01','2021-02-02',1023);
+INSERT INTO `Conferences` VALUES (1,32,'Conference','2020-02-02','2020-02-02',0,''),(2,32,'Conference','2020-02-02','2020-02-02',1023,''),(3,32,'Conference','2021-02-01','2021-02-02',1023,''),(4,32,'Conference','2021-02-01','2021-02-02',1023,''),(5,32,'Conference','2021-02-01','2021-02-02',1023,''),(6,32,'Conference','2021-02-01','2021-02-02',1023,'Une description');
 /*!40000 ALTER TABLE `Conferences` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -133,7 +134,7 @@ CREATE TABLE `Session` (
 
 LOCK TABLES `Session` WRITE;
 /*!40000 ALTER TABLE `Session` DISABLE KEYS */;
-INSERT INTO `Session` VALUES (32,'522cf914cdcb4a9bbcbb500f7e4161b8','2021-01-12 17:51:13',1),(32,'5b796c9fc47d45e9b8d824c6ea4a828e','2021-01-12 17:48:35',0),(32,'5e190d108d8844bcaaf893192a24fb1c','2021-01-12 17:50:56',0),(32,'757d38d55a5b4d4b8ef743fe139d6f43','2021-01-12 17:48:34',0),(32,'c519497eb8c34faa8fb52f0ae026f787','2021-01-12 17:52:39',1),(32,'cf2b919123ba45e2aebf98faf485747d','2021-01-12 17:48:29',0),(32,'df19444b333748008ec3342b2987e618','2021-01-18 15:40:03',1);
+INSERT INTO `Session` VALUES (32,'522cf914cdcb4a9bbcbb500f7e4161b8','2021-01-12 17:51:13',1),(32,'5b796c9fc47d45e9b8d824c6ea4a828e','2021-01-12 17:48:35',0),(32,'5e190d108d8844bcaaf893192a24fb1c','2021-01-12 17:50:56',0),(32,'757d38d55a5b4d4b8ef743fe139d6f43','2021-01-12 17:48:34',0),(32,'b8c41cc54d554c139fa4276f22d644f5','2021-01-19 22:12:35',0),(32,'c519497eb8c34faa8fb52f0ae026f787','2021-01-12 17:52:39',1),(32,'cf2b919123ba45e2aebf98faf485747d','2021-01-12 17:48:29',0),(32,'df19444b333748008ec3342b2987e618','2021-01-18 15:40:03',1);
 /*!40000 ALTER TABLE `Session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,4 +209,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-19 18:21:27
+-- Dump completed on 2021-01-20 21:20:35

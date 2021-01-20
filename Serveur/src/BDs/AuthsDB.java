@@ -352,4 +352,25 @@ public class AuthsDB {
 
         return status;
     }
+
+    public static int getIdFromEmail(String mail)  throws SQLException {
+        int id = -1;
+        String query = " select id_user From Users where (Mail=?)";
+
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+            preparedStmt.setString(1, mail);
+
+
+            ResultSet rs = preparedStmt.executeQuery();
+            if (rs.next())
+                id = rs.getInt("id_user");
+
+
+        }
+        return id;
+
+    }
+
 }

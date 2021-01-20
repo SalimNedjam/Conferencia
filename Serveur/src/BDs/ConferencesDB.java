@@ -34,11 +34,10 @@ public class ConferencesDB {
             return rs.next();
         }
     }
-    public static JSONObject addConference(String key, String nom, Date dateClotEarly, Date dateConf, int fieldSet) throws SQLException, JSONException {
-        String query = " insert into Conferences (id_resp, nom, date_clot_early, date_conf, field_set)" + " values (?, ?, ?, ?, ?)";
+    public static JSONObject addConference(int userId, String nom, Date dateClotEarly, Date dateConf, int fieldSet, String description) throws SQLException, JSONException {
+        String query = " insert into Conferences (id_resp, nom, date_clot_early, date_conf, field_set, description)" + " values (?, ?, ?, ?, ?, ?)";
         JSONObject conf = new JSONObject();
 
-        int userId = getUserIdFromKey(key);
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -47,6 +46,7 @@ public class ConferencesDB {
             preparedStmt.setDate(3, dateClotEarly);
             preparedStmt.setDate(4, dateConf);
             preparedStmt.setInt(5, fieldSet);
+            preparedStmt.setString(6, description);
 
             if (preparedStmt.executeUpdate() == 0)
                 throw new SQLException();
@@ -104,6 +104,7 @@ public class ConferencesDB {
                 conf.put("date_clot_early", rs.getDate("date_clot_early"));
                 conf.put("date_conf", rs.getDate("date_conf"));
                 conf.put("field_set", rs.getInt("field_set"));
+                conf.put("description", rs.getString("description"));
 
                 PreparedStatement preparedStmt2 = conn.prepareStatement(query2);
                 preparedStmt2.setInt(1, rs.getInt("id_conf"));
@@ -146,6 +147,7 @@ public class ConferencesDB {
                 conf.put("date_clot_early", rs.getDate("date_clot_early"));
                 conf.put("date_conf", rs.getDate("date_conf"));
                 conf.put("field_set", rs.getInt("field_set"));
+                conf.put("description", rs.getString("description"));
 
                 PreparedStatement preparedStmt2 = conn.prepareStatement(query2);
                 preparedStmt2.setInt(1, idC);

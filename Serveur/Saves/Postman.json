@@ -206,7 +206,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/Project_war/Conferences?key=df19444b333748008ec3342b2987e618&op=conf&nom=Conference&date_clot_early=2020-02-02&date_conf=2020-02-02&field_set=1023",
+							"raw": "http://localhost:8080/Project_war/Conferences?key=df19444b333748008ec3342b2987e618&op=conf&nom=Conference&date_clot_early=2021-02-01&date_conf=2021-02-02&field_set=1023&description=Une description&email=eatin.lham01@yandex.com",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -231,15 +231,23 @@
 								},
 								{
 									"key": "date_clot_early",
-									"value": "2020-02-02"
+									"value": "2021-02-01"
 								},
 								{
 									"key": "date_conf",
-									"value": "2020-02-02"
+									"value": "2021-02-02"
 								},
 								{
 									"key": "field_set",
 									"value": "1023"
+								},
+								{
+									"key": "description",
+									"value": "Une description"
+								},
+								{
+									"key": "email",
+									"value": "eatin.lham01@yandex.com"
 								}
 							]
 						}
@@ -428,7 +436,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/Project_war/Inscriptions?key=df19444b333748008ec3342b2987e618&id_insc=1&op=approve",
+							"raw": "http://localhost:8080/Project_war/Inscriptions?key=df19444b333748008ec3342b2987e618&id_insc=1&op=disapprove",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -449,7 +457,7 @@
 								},
 								{
 									"key": "op",
-									"value": "approve"
+									"value": "disapprove"
 								},
 								{
 									"key": "op",

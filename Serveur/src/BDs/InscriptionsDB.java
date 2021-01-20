@@ -52,7 +52,7 @@ public class InscriptionsDB {
     }
 
     public static JSONArray getAllInscriptions(int idC)  throws JSONException, SQLException {
-        String query = "select * From Inscriptions i where i.id_conf=?";
+        String query = "select * From Inscriptions i, Users u, Conference_type t where i.id_conf=? and i.id_type = t.id_type and i.id_user = u.id_user";
 
         JSONArray array = new JSONArray();
 
@@ -67,6 +67,10 @@ public class InscriptionsDB {
                 conf.put("id_conf", rs.getInt("id_conf"));
                 conf.put("id_type", rs.getInt("id_type"));
                 conf.put("id_user", rs.getInt("id_user"));
+                conf.put("mail", rs.getString("Mail"));
+                conf.put("nom", rs.getString("nom"));
+                conf.put("tarif_early", rs.getString("tarif_early"));
+                conf.put("tarif_late", rs.getString("tarif_late"));
                 conf.put("is_early", rs.getBoolean("is_early"));
                 conf.put("approved", rs.getInt("approved"));
                 conf.put("paid", rs.getBoolean("paid"));
@@ -78,7 +82,7 @@ public class InscriptionsDB {
     }
 
     public static JSONArray getInscriptionsByUser(String  key)  throws JSONException, SQLException {
-        String query = " select * From Session s, Inscriptions i where s.key_session=?  and s.id_user= i.id_user";
+        String query = " select * From Session s, Inscriptions i, Users u, Conference_type t where s.key_session=?  and s.id_user= i.id_user and i.id_type = t.id_type and i.id_user = u.id_user";
 
         JSONArray array = new JSONArray();
 
@@ -94,6 +98,10 @@ public class InscriptionsDB {
                 conf.put("id_conf", rs.getInt("id_conf"));
                 conf.put("id_type", rs.getInt("id_type"));
                 conf.put("id_user", rs.getInt("id_user"));
+                conf.put("mail", rs.getString("Mail"));
+                conf.put("nom", rs.getString("nom"));
+                conf.put("tarif_early", rs.getString("tarif_early"));
+                conf.put("tarif_late", rs.getString("tarif_late"));
                 conf.put("is_early", rs.getBoolean("is_early"));
                 conf.put("approved", rs.getInt("approved"));
                 conf.put("paid", rs.getBoolean("paid"));

@@ -11,19 +11,23 @@ package Services;
         import java.sql.SQLException;
         import java.text.SimpleDateFormat;
 
+        import static Tools.AuthsTools.getIdFromEmail;
+
 public class ConferencesManager {
 
-    public static JSONObject addConference(String key, String nom, String dateClotEarly, String dateConf, String field_set) {
+    public static JSONObject addConference(String key, String nom, String dateClotEarly, String dateConf, String field_set, String description, String email) {
         Date date_clot_early, date_conf;
         int fieldSet;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (key == null || nom == null || dateClotEarly == null || dateConf == null || field_set == null
-                || key.equals("") || nom.equals("") || dateClotEarly.equals("") || dateConf.equals("") || field_set.equals(""))
+        if (key == null || nom == null || dateClotEarly == null || dateConf == null || field_set == null || description == null || email == null
+                || key.equals("") || nom.equals("") || dateClotEarly.equals("") || dateConf.equals("") || field_set.equals("") || description.equals("") || email.equals(""))
             return ErrorJSON.serviceRefused("Erreur arguments", -1);
         try {
             try {
                 nom = nom.substring(0, 1).toUpperCase() + nom.substring(1).toLowerCase();
+                description = description.substring(0, 1).toUpperCase() + description.substring(1);
+
                 date_clot_early = new Date(sdf.parse(dateClotEarly).getTime());
                 date_conf = new Date(sdf.parse(dateConf).getTime());
                 fieldSet = Integer.parseInt(field_set);
@@ -33,11 +37,11 @@ public class ConferencesManager {
             }
             if (!AuthsTools.isKeyValid(key))
                 return ErrorJSON.serviceRefused("Clé invalide", 1);
-
             if (!AuthsTools.isStaff(key))
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
-            return ConferencesTools.addConference(key, nom, date_clot_early, date_conf, fieldSet);
+
+            return ConferencesTools.addConference(getIdFromEmail(email), nom, date_clot_early, date_conf, fieldSet, description);
 
 
         } catch (SQLException e) {
