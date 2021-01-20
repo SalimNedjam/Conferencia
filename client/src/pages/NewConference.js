@@ -139,7 +139,7 @@ export default class NewConference extends Component {
                 } else {
                     let errors = {};
                     errors["serverError"] = res.data.message;
-                    this.setState({errors})
+                    this.setState({errors, loading: false})
                 }
             });
         }

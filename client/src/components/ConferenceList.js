@@ -48,7 +48,7 @@ export default class ConferenceList extends Component {
 						<small>{item.types.length} types d'inscriptions</small>
 					}	
 				</div>
-				<p class="mb-1">Description</p>
+				<p class="mb-1">{item.description}</p>
 				<small>Fin early  {item.date_clot_early}</small><br></br>
 				<small>Le {item.date_conf}</small>
 			</a>

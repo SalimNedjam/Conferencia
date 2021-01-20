@@ -5,7 +5,6 @@ import axios from 'axios';
 
 import Header from '../components/Header';
 import Loading from '../components/Loading';
-import { data } from "jquery";
 
 class Conference extends Component {
 
@@ -38,13 +37,30 @@ class Conference extends Component {
 		}
 	}
 
+	setInscriptionStatut(id, statut) {
+		console.log(id);
+		if (statut == 'approve' || statut == 'disapprove') {
+			let params = new URLSearchParams();
+			params.append('key', read_cookie("key"));
+			params.append('id_insc', id);
+			params.append('op', statut);
+
+			this.setState({loading: true});
+			axios.post("http://localhost:8080/Project_war/Inscriptions", params)
+			.then(res => {
+				if (res.data.code === undefined) {
+					document.location.reload();
+				}
+			});
+		}
+	}
+
 	isSubscribed() {
 		const params = new URLSearchParams();
 		params.append('key', read_cookie("key"));
 
 		axios.get("http://localhost:8080/Project_war/Inscriptions?" + params)
 		.then(res => {
-			console.log(res.data);
 			if (res.data.code === undefined) {
 				const i = res.data.inscriptions.findIndex((value) => value.id_conf == this.props.match.params.id)
 				this.setState({subscribed: (i >= 0)});
@@ -92,7 +108,7 @@ class Conference extends Component {
 					}}>
 					<option value={0}>Sélectionnez un type</option>
 					{conf.types.map((type) => {
-						const tarif = type.tarif_early;
+						const tarif = type.is_early ? type.tarif_early : type.tarif_late;
 						return (
 							<option value={type.id_type}>{type.nom} -- {tarif}€</option>
 						)
@@ -140,7 +156,9 @@ class Conference extends Component {
                 </thead>
 				{inscriptions.map((inscription, index) => {
 					let statut;
+					let pending = false;
 					if (inscription.approved == 0 && inscription.paid == 0) {
+						pending = true;
 						statut = "En attente de validation";
 					} else if (inscription.approved == 1 && inscription.paid == 0) {
 						statut = "Validé";
@@ -154,20 +172,24 @@ class Conference extends Component {
 								<td class="align-middle">{inscription.nom} -- {inscription.tarif_early}€</td>
 								<td class="align-middle">{statut}</td>
 								<td>
-									<button 
-										type="button"
-										class="btn btn-link" 
-										onClick={() => {}}>
-										Valider
-									</button>
+									{pending &&
+										<button 
+											type="button"
+											class="btn btn-link" 
+											onClick={() => this.setInscriptionStatut(inscription.id_insc, 'approve')}>
+											Valider
+										</button>
+									}
 								</td>
 								<td>
-									<button 
-										type="button"
-										class="btn btn-link" 
-										onClick={() => {}}>
-										Refuser
-									</button>
+									{pending &&
+										<button 
+											type="button"
+											class="btn btn-link" 
+											onClick={() => this.setInscriptionStatut(inscription.id_insc, 'disapprove')}>
+											Refuser
+										</button>
+									}
 								</td>
 							</tr>
 						</tbody>
@@ -199,7 +221,6 @@ class Conference extends Component {
 
 	renderConf() {
 		const {conf} = this.state;
-		console.log(conf);
 		if (conf) return (
 			<div class="box container box-md mt-5 p-3">
 				<h2>{conf.nom}</h2>
