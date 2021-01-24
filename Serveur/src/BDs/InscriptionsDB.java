@@ -1,14 +1,20 @@
 package BDs;
 
 import Tools.Database;
+import Tools.EmailUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Properties;
 
+import static BDs.AuthsDB.getEmailFromId;
 import static BDs.AuthsDB.getUserIdFromKey;
 
 public class InscriptionsDB {
@@ -29,10 +35,9 @@ public class InscriptionsDB {
     }
 
 
-    public static Boolean addInscription(String key, int idC, int idT, boolean isEarly) throws SQLException {
+    public static int addInscription(int userId, int idC, int idT, boolean isEarly) throws SQLException {
         String query = " insert into Inscriptions (id_user, id_conf, id_type, is_early, approved, paid)" + " values (?, ?, ?, ?, ?, ?)";
-
-        int userId = getUserIdFromKey(key);
+        int id_insc;
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
 
@@ -43,10 +48,39 @@ public class InscriptionsDB {
             preparedStmt.setBoolean(5, false);
             preparedStmt.setBoolean(6, false);
 
-            if (preparedStmt.executeUpdate() > 0)
-                return true;
+            if (preparedStmt.executeUpdate() > 0) {
+                    final String fromEmail = "Twister.Web.recover@gmail.com";
+                    final String emailPass = "qtkskcnkuhmsvwzk";
+                    System.out.println("TLSEmail Start");
+                    Properties props = new Properties();
+                    props.put("mail.smtp.host", "smtp.gmail.com");
+                    props.put("mail.smtp.port", "587");
+                    props.put("mail.smtp.auth", "true");
+                    props.put("mail.smtp.starttls.enable", "true");
+
+                    Authenticator auth = new Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(fromEmail, emailPass);
+                        }
+                    };
+                    Session session = Session.getInstance(props, auth);
+
+                    EmailUtil.sendEmail(session, getEmailFromId(userId), "Demande d'inscription à une conférence.", "Merci de vous être inscrit à une conférence.\nVous allez recevoir un mail pour vous prevenir de l'avancement de votre inscription.\n");
+
+                try (ResultSet generatedKeys = preparedStmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        id_insc = (int) generatedKeys.getLong(1);
+                    }
+                    else {
+                        throw new SQLException();
+                    }
+                }
+
+
+                return id_insc;
+                }
             else
-                return false;
+                throw new SQLException();
 
         }
     }
@@ -113,14 +147,99 @@ public class InscriptionsDB {
     }
 
 
-    public static boolean approveInscription(int idI, int approve) throws SQLException {
+    public static boolean approveInscription(int idI, String email) throws SQLException {
         String query = "update Inscriptions set approved = ? where id_insc = ?";
 
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
-            preparedStmt.setInt(1, approve);
+            preparedStmt.setInt(1, 1);
             preparedStmt.setInt(2, idI);
             preparedStmt.executeUpdate();
+            if (preparedStmt.executeUpdate() > 0){
+                final String fromEmail = "Twister.Web.recover@gmail.com";
+                final String emailPass = "qtkskcnkuhmsvwzk";
+                System.out.println("TLSEmail Start");
+                Properties props = new Properties();
+                props.put("mail.smtp.host", "smtp.gmail.com");
+                props.put("mail.smtp.port", "587");
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.starttls.enable", "true");
+
+                Authenticator auth = new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(fromEmail, emailPass);
+                    }
+                };
+                Session session = Session.getInstance(props, auth);
+
+                EmailUtil.sendEmail(session, email, "Demande d'inscription à une conférence a été acceptée.", "Votre demande d'inscription à une conférence a été acceptée, vous devez maintenant proceder au payement\n");
+                return true;
+            } else
+                    return false;
+        }
+    }
+
+    public static boolean disapproveInscription(int idI, String email, String reason) throws SQLException {
+        String query = "update Inscriptions set approved = ? where id_insc = ?";
+
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+            preparedStmt.setInt(1, 2);
+            preparedStmt.setInt(2, idI);
+            preparedStmt.executeUpdate();
+            if (preparedStmt.executeUpdate() > 0){
+                final String fromEmail = "Twister.Web.recover@gmail.com";
+                final String emailPass = "qtkskcnkuhmsvwzk";
+                System.out.println("TLSEmail Start");
+                Properties props = new Properties();
+                props.put("mail.smtp.host", "smtp.gmail.com");
+                props.put("mail.smtp.port", "587");
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.starttls.enable", "true");
+
+                Authenticator auth = new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(fromEmail, emailPass);
+                    }
+                };
+                Session session = Session.getInstance(props, auth);
+
+                EmailUtil.sendEmail(session, email, "Demande d'inscription à une conférence a été refusée.", "Votre demande d'inscription à une conférence a été refusée pour la raison suivante:\n" + reason +"\n");
+                return true;
+            }
+        }
+        return true;
+    }
+
+
+    public static boolean payInscription(int idI, String email) throws SQLException {
+        String query = "update Inscriptions set paid = ? where id_insc = ?";
+
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+            preparedStmt.setBoolean(1, true);
+            preparedStmt.setInt(2, idI);
+            preparedStmt.executeUpdate();
+            if (preparedStmt.executeUpdate() > 0){
+                final String fromEmail = "Twister.Web.recover@gmail.com";
+                final String emailPass = "qtkskcnkuhmsvwzk";
+                System.out.println("TLSEmail Start");
+                Properties props = new Properties();
+                props.put("mail.smtp.host", "smtp.gmail.com");
+                props.put("mail.smtp.port", "587");
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.starttls.enable", "true");
+
+                Authenticator auth = new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(fromEmail, emailPass);
+                    }
+                };
+                Session session = Session.getInstance(props, auth);
+
+                EmailUtil.sendEmail(session, email, "Votre payement à été accepté.", "Votre payement a été accepter, votre inscription à la conférence est confirmé.\n");
+                return true;
+            }
         }
         return true;
     }

@@ -32,8 +32,9 @@ public class CreateUser extends HttpServlet {
         String city = request.getParameter("city");
         String country = request.getParameter("country");
         String phone = request.getParameter("phone");
+        JSONObject json;
+        json = UsersManager.createUser(password, email, nom, prenom, title, institution, address, zip, city, country, phone);
 
-        JSONObject json = UsersManager.createUser(password, email, nom, prenom, title, institution, address, zip, city, country, phone);
         response.setContentType(" text / json ");
         PrintWriter out = response.getWriter();
         out.println(json);

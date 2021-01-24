@@ -32,4 +32,8 @@ public class UsersTools {
     }
 
 
+    public static int inviteUser(String email) throws SQLException  {
+        return UsersDB.inviteUser(email);
+
+    }
 }

@@ -14,9 +14,9 @@ public class InscriptionsTools {
 
 
 
-    public static Boolean addInscription(String key, int idC, int idT, boolean isEarly)  throws SQLException {
+    public static int addInscription(int id_user, int idC, int idT, boolean isEarly)  throws SQLException {
 
-        return InscriptionsDB.addInscription(key, idC, idT, isEarly);
+        return InscriptionsDB.addInscription(id_user, idC, idT, isEarly);
     }
 
 
@@ -34,8 +34,18 @@ public class InscriptionsTools {
 
     }
 
-    public static boolean approveInscription(int idI, int approve)   throws SQLException {
-        return InscriptionsDB.approveInscription(idI, approve);
+    public static boolean approveInscription(int idI, int approve, String email, String reason)   throws SQLException {
+        if(approve == 1)
+            return InscriptionsDB.approveInscription(idI, email);
+        else
+            return InscriptionsDB.disapproveInscription(idI, email, reason);
 
     }
+
+
+    public static boolean payInscription(int idI, String email)   throws SQLException {
+        return InscriptionsDB.payInscription(idI, email);
+
+    }
+
 }

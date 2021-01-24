@@ -11,10 +11,11 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Properties;
+import java.util.UUID;
 
 public class UsersDB {
 
-    public static boolean insertUser(String password, String email, String nom, String prenom, String title, String institution, String address, String zip, String city, String country, String phone)throws SQLException {
+    public static boolean insertUser(String password, String email, String nom, String prenom, String title, String institution, String address, String zip, String city, String country, String phone) throws SQLException {
 
         try (Connection conn = Database.getMySQLConnection();
              Statement statement = conn.createStatement()) {
@@ -179,5 +180,101 @@ public class UsersDB {
 
     public static boolean sameUser(String key, int id) throws SQLException {
         return AuthsTools.getUserIdFromKey(key) == id;
+    }
+
+    public static int inviteUser(String email) throws SQLException {
+        int idUser;
+
+        String password = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+
+        try (Connection conn = Database.getMySQLConnection();
+             Statement statement = conn.createStatement()) {
+            statement.execute("BEGIN");
+            String query = " insert into Users (Mail,Password,date_create, is_staff)" + " values (?, md5(?), ?, ?)";
+            try (PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+                Timestamp createDate = Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
+
+                preparedStmt.setString(1, email);
+                preparedStmt.setString(2, password);
+                preparedStmt.setTimestamp(3, createDate);
+                preparedStmt.setBoolean(4, false);
+
+
+                if (preparedStmt.executeUpdate() == 0) {
+                    statement.execute("ROLLBACK");
+                    return -1;
+                }
+
+            } catch (SQLException e) {
+                statement.execute("ROLLBACK");
+                throw new SQLException("Rollback Users");
+            }
+
+            query = " select id_user From Users where Mail=?";
+
+            try (PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+                preparedStmt.setString(1, email);
+
+                ResultSet rs = preparedStmt.executeQuery();
+                if (rs.next())
+                    idUser = rs.getInt("id_user");
+                else {
+                    statement.execute("ROLLBACK");
+                    return -1;
+                }
+
+            } catch (SQLException e) {
+                statement.execute("ROLLBACK");
+                throw new SQLException("Rollback UserId");
+            }
+
+            query = " insert into UserInfos (id_user, nom, prenom, title, institution, address, zip, city, country, phone)" + " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+                preparedStmt.setInt(1, idUser);
+                preparedStmt.setString(2, "");
+                preparedStmt.setString(3, "");
+                preparedStmt.setString(4, "");
+                preparedStmt.setString(5, "");
+                preparedStmt.setString(6, "");
+                preparedStmt.setString(7, "");
+                preparedStmt.setString(8, "");
+                preparedStmt.setString(9, "");
+                preparedStmt.setString(10, "");
+
+
+                if (preparedStmt.executeUpdate() == 0) {
+                    statement.execute("ROLLBACK");
+                    return -1;
+                }
+                statement.execute("COMMIT");
+                final String fromEmail = "Twister.Web.recover@gmail.com";
+                final String emailPass = "qtkskcnkuhmsvwzk";
+                System.out.println("TLSEmail Start");
+                Properties props = new Properties();
+                props.put("mail.smtp.host", "smtp.gmail.com");
+                props.put("mail.smtp.port", "587");
+                props.put("mail.smtp.auth", "true");
+                props.put("mail.smtp.starttls.enable", "true");
+
+                Authenticator auth = new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(fromEmail, emailPass);
+                    }
+                };
+                Session session = Session.getInstance(props, auth);
+
+                EmailUtil.sendEmail(session, email, "Vous avez été invité dans le site Conferentia", "Vous avez été invité dans le site Conferentia, votre email est: " +email+ " et votre mot de passe est: "+password);
+
+
+            } catch (SQLException e) {
+                statement.execute("ROLLBACK");
+                throw new SQLException("Rollback UserInfo");
+            }
+        }
+
+        return idUser;
     }
 }

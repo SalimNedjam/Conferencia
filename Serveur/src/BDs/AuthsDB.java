@@ -373,4 +373,43 @@ public class AuthsDB {
 
     }
 
+    public static String getEmailFromId(int id_user)  throws SQLException {
+        String query = " select Mail From Users where (id_user=?)";
+        String mail = "";
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+            preparedStmt.setInt(1, id_user);
+
+
+            ResultSet rs = preparedStmt.executeQuery();
+            if (rs.next())
+                mail = rs.getString("Mail");
+
+
+        }
+        return mail;
+
+    }
+    public static String getEmailFromKey(String key) throws SQLException {
+        String mail = "";
+        String query = " select Mail From Session s, Users u where s.key_session=? and u.user_id = s.user_id";
+
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+            preparedStmt.setString(1, key);
+
+            ResultSet rs = preparedStmt.executeQuery();
+            if (rs.next())
+                mail = rs.getString("Mail");
+
+
+        }
+
+
+        return mail;
+
+    }
+
 }

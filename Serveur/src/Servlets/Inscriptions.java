@@ -1,11 +1,10 @@
 package Servlets;
 
-import Services.ConferencesManager;
 import Services.InscriptionsManager;
+import Services.UsersManager;
 import Tools.ErrorJSON;
 import org.json.JSONObject;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +24,8 @@ public class Inscriptions extends HttpServlet {
         String idType = request.getParameter("id_type");
         String operation = request.getParameter("op");
         String idInsc = request.getParameter("id_insc");
+        String reason = request.getParameter("reason");
+        String email = request.getParameter("email");
 
         String key = request.getParameter("key");
         JSONObject json;
@@ -35,10 +36,16 @@ public class Inscriptions extends HttpServlet {
                     json = InscriptionsManager.addInscription(key, idConf, idType);
                     break;
                 case "approve":
-                    json = InscriptionsManager.approveInscription(key, idInsc, 1);
+                    json = InscriptionsManager.approveInscription(key, idInsc, 1, reason);
                     break;
                 case "disapprove":
-                    json = InscriptionsManager.approveInscription(key, idInsc, 2);
+                    json = InscriptionsManager.approveInscription(key, idInsc, 2, reason);
+                    break;
+                case "pay":
+                    json = InscriptionsManager.payInscription(key, idInsc);
+                    break;
+                case "invite":
+                    json = InscriptionsManager.inviteUser(key, email, idConf, idType);
                     break;
                 default:
                     json = ErrorJSON.serviceRefused("Undifined Operation", 5);
