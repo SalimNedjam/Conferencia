@@ -13,7 +13,7 @@ class Header extends Component {
           }
           <nav class={"navbar navbar-light bg-light"}>
             <div class="container-fluid">
-              <a class="navbar-brand" href="JavaScript.Void(0)" onClick={() => window.location.href='/'}>Conferentia</a>
+              <a class="navbar-brand" href="javascript:void(0)" onClick={() => window.location.href='/'}>Conferentia</a>
               <div class="d-flex">
                 {!this.props.user.admin && 
                   <button 
