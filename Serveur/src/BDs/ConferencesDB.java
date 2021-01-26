@@ -93,8 +93,10 @@ public class ConferencesDB {
     }
 
     public static JSONArray getAllConference() throws JSONException, SQLException {
-        String query = "select * From Conferences c";
+        String query = "select * From Conferences";
         String query2 = "select * From Conference_type t where t.id_conf=?";
+        String query3 = "select * From UserInfos where id_user = ?";
+        String[] field = {"nom", "prenom", "title", "institution", "address", "zip", "city", "country", "phone"};
 
         JSONArray array = new JSONArray();
 
@@ -105,9 +107,20 @@ public class ConferencesDB {
 
             while (rs.next()) {
                 JSONObject conf = new JSONObject();
+                JSONObject resp = new JSONObject();
+                PreparedStatement preparedStmt3 = conn.prepareStatement(query3);
+                preparedStmt3.setInt(1, rs.getInt("id_resp"));
+                ResultSet rs3 = preparedStmt3.executeQuery();
+                if(rs3.next()){
+                    for(int i=0; i<field.length; i++){
+                        resp.put(field[i],rs3.getString(field[i]));
+                    }
+                    resp.put("id_resp", rs.getInt("id_resp"));
+                }
+
                 conf.put("id_conf", rs.getInt("id_conf"));
-                conf.put("id_resp", rs.getInt("id_resp"));
                 conf.put("nom", rs.getString("nom"));
+                conf.put("responsable", resp);
                 conf.put("date_clot_early", rs.getDate("date_clot_early"));
                 conf.put("date_conf", rs.getDate("date_conf"));
                 conf.put("field_set", rs.getInt("field_set"));
@@ -139,17 +152,30 @@ public class ConferencesDB {
 
         String query = "select * From Conferences c where c.id_conf=?";
         String query2 = "select * From Conference_type t where t.id_conf=?";
+        String query3 = "select * From UserInfos i where i.id_user = ?";
 
         JSONObject conf = new JSONObject();
-
+        JSONObject resp = new JSONObject();
+        String[] field = {"nom", "prenom", "title", "institution", "address", "zip", "city", "country", "phone"};
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
             preparedStmt.setInt(1, idC);
             ResultSet rs = preparedStmt.executeQuery();
 
             while (rs.next()) {
+                PreparedStatement preparedStmt3 = conn.prepareStatement(query3);
+                preparedStmt3.setInt(1, rs.getInt("id_resp"));
+                ResultSet rs3 = preparedStmt3.executeQuery();
+                if(rs3.next()) {
+
+                    for (int i = 0; i < field.length; i++) {
+                        resp.put(field[i], rs3.getString(field[i]));
+                    }
+                    resp.put("id_resp", rs.getInt("id_resp"));
+
+                }
+                conf.put("responsable", resp);
                 conf.put("id_conf", idC);
-                conf.put("id_resp", rs.getInt("id_resp"));
                 conf.put("nom", rs.getString("nom"));
                 conf.put("date_clot_early", rs.getDate("date_clot_early"));
                 conf.put("date_conf", rs.getDate("date_conf"));

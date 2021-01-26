@@ -86,21 +86,38 @@ public class InscriptionsDB {
     }
 
     public static JSONArray getAllInscriptions(int idC)  throws JSONException, SQLException {
-        String query = "select * From Inscriptions i, Users u, Conference_type t where i.id_conf=? and i.id_type = t.id_type and i.id_user = u.id_user";
+        String query = "select * From Inscriptions i, Users u, Conference_type t, Conferences c where i.id_conf=? and i.id_type = t.id_type and i.id_user = u.id_user and i.id_conf= c.id_conf";
+        String query3 = "select * From UserInfos i where i.id_user = ?";
+        String[] field = {"nom", "prenom", "title", "institution", "address", "zip", "city", "country", "phone"};
 
         JSONArray array = new JSONArray();
-
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
             preparedStmt.setInt(1, idC);
             ResultSet rs = preparedStmt.executeQuery();
 
             while (rs.next()) {
+                JSONObject user = new JSONObject();
                 JSONObject conf = new JSONObject();
+
+                PreparedStatement preparedStmt3 = conn.prepareStatement(query3);
+                preparedStmt3.setInt(1, rs.getInt("id_user"));
+                ResultSet rs3 = preparedStmt3.executeQuery();
+                int field_set=rs.getInt("field_set");
+
+                if(rs3.next()){
+                    for(int i=0; i<field.length; i++){
+                        if((field_set & 1 << i) != 0){
+                            user.put(field[i],rs3.getString(field[i]));
+
+                        }
+                        conf.put("id_user", rs.getInt("id_user"));
+                    }
+                }
+                conf.put("user", user);
                 conf.put("id_insc", rs.getInt("id_insc"));
                 conf.put("id_conf", rs.getInt("id_conf"));
                 conf.put("id_type", rs.getInt("id_type"));
-                conf.put("id_user", rs.getInt("id_user"));
                 conf.put("mail", rs.getString("Mail"));
                 conf.put("nom", rs.getString("nom"));
                 conf.put("tarif_early", rs.getString("tarif_early"));
@@ -117,7 +134,8 @@ public class InscriptionsDB {
 
     public static JSONArray getInscriptionsByUser(String  key)  throws JSONException, SQLException {
         String query = " select * From Session s, Inscriptions i, Users u, Conference_type t where s.key_session=?  and s.id_user= i.id_user and i.id_type = t.id_type and i.id_user = u.id_user";
-
+        String query3 = "select * From UserInfos i where i.id_user = ?";
+        String[] field = {"nom", "prenom", "title", "institution", "address", "zip", "city", "country", "phone"};
         JSONArray array = new JSONArray();
 
         try (Connection conn = Database.getMySQLConnection();
@@ -127,11 +145,28 @@ public class InscriptionsDB {
             ResultSet rs = preparedStmt.executeQuery();
 
             while (rs.next()) {
+                JSONObject user = new JSONObject();
                 JSONObject conf = new JSONObject();
+
+                PreparedStatement preparedStmt3 = conn.prepareStatement(query3);
+                preparedStmt3.setInt(1, rs.getInt("id_user"));
+                ResultSet rs3 = preparedStmt3.executeQuery();
+                int field_set=rs.getInt("field_set");
+
+                if(rs3.next()){
+                    for(int i=0; i<field.length; i++){
+                        if((field_set & 1 << i) != 0){
+                            user.put(field[i],rs3.getString(field[i]));
+
+                        }
+                        conf.put("id_user", rs.getInt("id_user"));
+                    }
+                }
+
+                conf.put("user", user);
                 conf.put("id_insc", rs.getInt("id_insc"));
                 conf.put("id_conf", rs.getInt("id_conf"));
                 conf.put("id_type", rs.getInt("id_type"));
-                conf.put("id_user", rs.getInt("id_user"));
                 conf.put("mail", rs.getString("Mail"));
                 conf.put("nom", rs.getString("nom"));
                 conf.put("tarif_early", rs.getString("tarif_early"));
