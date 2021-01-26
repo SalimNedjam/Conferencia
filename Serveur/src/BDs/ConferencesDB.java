@@ -95,7 +95,7 @@ public class ConferencesDB {
     public static JSONArray getAllConference() throws JSONException, SQLException {
         String query = "select * From Conferences";
         String query2 = "select * From Conference_type t where t.id_conf=?";
-        String query3 = "select * From UserInfos where id_user = ?";
+        String query3 = "select * From UserInfos i, Users u where u.id_user = ? and u.id_user = i.id_user";
         String[] field = {"nom", "prenom", "title", "institution", "address", "zip", "city", "country", "phone"};
 
         JSONArray array = new JSONArray();
@@ -116,6 +116,7 @@ public class ConferencesDB {
                         resp.put(field[i],rs3.getString(field[i]));
                     }
                     resp.put("id_resp", rs.getInt("id_resp"));
+                    resp.put("mail", rs3.getString("Mail"));
                 }
 
                 conf.put("id_conf", rs.getInt("id_conf"));
@@ -152,7 +153,7 @@ public class ConferencesDB {
 
         String query = "select * From Conferences c where c.id_conf=?";
         String query2 = "select * From Conference_type t where t.id_conf=?";
-        String query3 = "select * From UserInfos i where i.id_user = ?";
+        String query3 = "select * From UserInfos i, Users u where u.id_user = ? and u.id_user = i.id_user";
 
         JSONObject conf = new JSONObject();
         JSONObject resp = new JSONObject();
@@ -172,6 +173,7 @@ public class ConferencesDB {
                         resp.put(field[i], rs3.getString(field[i]));
                     }
                     resp.put("id_resp", rs.getInt("id_resp"));
+                    resp.put("mail", rs3.getString("Mail"));
 
                 }
                 conf.put("responsable", resp);
