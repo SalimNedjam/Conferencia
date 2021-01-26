@@ -411,5 +411,25 @@ public class AuthsDB {
         return mail;
 
     }
+    public static String getEmailFromInsc(int id_insc) throws SQLException {
+        String mail = "";
+        String query = " select Mail From Iscriptions i, Users u where  u.user_id = i.user_id and i.id_insc = ?";
+
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+            preparedStmt.setInt(1, id_insc);
+
+            ResultSet rs = preparedStmt.executeQuery();
+            if (rs.next())
+                mail = rs.getString("Mail");
+
+
+        }
+
+
+        return mail;
+
+    }
 
 }

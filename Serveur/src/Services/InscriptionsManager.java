@@ -116,7 +116,7 @@ public class InscriptionsManager {
             if (!InscriptionsTools.isResponsableOfInscription(key, idI))
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
-            email = AuthsDB.getEmailFromKey(key);
+            email = AuthsDB.getEmailFromInsc(idI);
 
             if(InscriptionsTools.approveInscription(idI, approve, email, reason))
                 return ErrorJSON.serviceAccepted();
