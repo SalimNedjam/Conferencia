@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -432,4 +431,19 @@ public class AuthsDB {
 
     }
 
+    public static boolean putAdmin(String email) throws SQLException {
+
+        String query = " update Users set  is_staff = 2 where Mail=?;";
+
+
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+
+            preparedStmt.setString(1, email);
+
+
+            return preparedStmt.executeUpdate() > 0;
+        }
+
+    }
 }

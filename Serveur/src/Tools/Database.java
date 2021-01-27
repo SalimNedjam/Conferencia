@@ -41,7 +41,7 @@ public class Database {
                     DBStatic.mysql_password);
         } else {
             if (database == null) {
-                database = new Database("jdbc/Nedjam_AitGhezali");
+                database = new Database("jdbc/project");
             }
             return (database.getConnection());
         }

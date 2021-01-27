@@ -1,22 +1,13 @@
 package BDs;
 
-import Tools.AuthsTools;
 import Tools.Database;
-import Tools.EmailUtil;
-import com.mysql.cj.xdevapi.JsonArray;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Properties;
-
-import static BDs.AuthsDB.getUserIdFromKey;
 
 public class ConferencesDB {
 
@@ -85,10 +76,7 @@ public class ConferencesDB {
             preparedStmt.setInt(4, late);
             preparedStmt.setInt(5, need_file);
 
-            if (preparedStmt.executeUpdate() > 0)
-                return true;
-            else
-                return false;
+            return preparedStmt.executeUpdate() > 0;
 
 
         }
@@ -114,8 +102,8 @@ public class ConferencesDB {
                 preparedStmt3.setInt(1, rs.getInt("id_resp"));
                 ResultSet rs3 = preparedStmt3.executeQuery();
                 if(rs3.next()){
-                    for(int i=0; i<field.length; i++){
-                        resp.put(field[i],rs3.getString(field[i]));
+                    for (String s : field) {
+                        resp.put(s, rs3.getString(s));
                     }
                     resp.put("id_resp", rs.getInt("id_resp"));
                     resp.put("mail", rs3.getString("Mail"));
@@ -172,8 +160,8 @@ public class ConferencesDB {
                 ResultSet rs3 = preparedStmt3.executeQuery();
                 if(rs3.next()) {
 
-                    for (int i = 0; i < field.length; i++) {
-                        resp.put(field[i], rs3.getString(field[i]));
+                    for (String s : field) {
+                        resp.put(s, rs3.getString(s));
                     }
                     resp.put("id_resp", rs.getInt("id_resp"));
                     resp.put("mail", rs3.getString("Mail"));
@@ -223,8 +211,7 @@ public class ConferencesDB {
 
 
                 Timestamp timeNow = Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
-                if (timeNow.getTime() - rs.getDate("date_conf").getTime() < 0)
-                    return true;
+                return timeNow.getTime() - rs.getDate("date_conf").getTime() < 0;
 
             }
             return false;
@@ -245,8 +232,7 @@ public class ConferencesDB {
 
 
                 Timestamp timeNow = Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC")));
-                if (timeNow.getTime() - rs.getDate("date_clot_early").getTime() < 0)
-                    return true;
+                return timeNow.getTime() - rs.getDate("date_clot_early").getTime() < 0;
 
             }
             return false;

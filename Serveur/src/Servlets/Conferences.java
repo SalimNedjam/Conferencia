@@ -1,7 +1,6 @@
 package Servlets;
 
 import Services.ConferencesManager;
-import Tools.ErrorJSON;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -19,7 +18,7 @@ public class Conferences extends HttpServlet {
      */
     private static final long serialVersionUID = 1L;
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String nom = request.getParameter("nom");
         String field_set = request.getParameter("field_set");
         String description = request.getParameter("description");

@@ -11,12 +11,9 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import java.io.InputStream;
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Properties;
 
 import static BDs.AuthsDB.getEmailFromId;
-import static BDs.AuthsDB.getUserIdFromKey;
 
 public class InscriptionsDB {
 

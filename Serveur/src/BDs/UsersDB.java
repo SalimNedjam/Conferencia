@@ -163,7 +163,7 @@ public class UsersDB {
 
     }
 
-    public static boolean isAdmin(int userdId) throws SQLException {
+    public static int isAdmin(int userdId) throws SQLException {
         String query = " select is_staff From Users where id_user=?";
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
@@ -172,10 +172,10 @@ public class UsersDB {
 
             ResultSet rs = preparedStmt.executeQuery();
             if (rs.next())
-                return rs.getInt("is_staff") == 2;
+                return rs.getInt("is_staff");
 
         }
-        return false;
+        return 0;
     }
 
     public static boolean sameUser(String key, int id) throws SQLException {

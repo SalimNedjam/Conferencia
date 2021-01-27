@@ -1,6 +1,7 @@
 package Servlets;
 
 import Services.UsersManager;
+import Tools.ErrorJSON;
 import org.json.JSONObject;
 
 import javax.servlet.annotation.WebServlet;
@@ -32,9 +33,26 @@ public class CreateUser extends HttpServlet {
         String city = request.getParameter("city");
         String country = request.getParameter("country");
         String phone = request.getParameter("phone");
-        JSONObject json;
-        json = UsersManager.createUser(password, email, nom, prenom, title, institution, address, zip, city, country, phone);
+        String operation = request.getParameter("op");
+        String key = request.getParameter("key");
 
+        JSONObject json;
+        if(operation != null) {
+            switch (operation) {
+                case "user":
+                    json = UsersManager.createUser(password, email, nom, prenom, title, institution, address, zip, city, country, phone);
+                    break;
+                case "admin":
+                    json = UsersManager.inviteAdmin(key, email);
+                    break;
+                default:
+                    json = ErrorJSON.serviceRefused("Undifined Operation", 5);
+                    break;
+            }
+
+        }else {
+            json = ErrorJSON.serviceRefused("Undifined Operation", 5);
+        }
         response.setContentType(" text / json ");
         PrintWriter out = response.getWriter();
         out.println(json);

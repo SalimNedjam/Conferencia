@@ -66,9 +66,9 @@ public class InscriptionsManager {
                 return ErrorJSON.serviceRefused("Clé invalide", 1);
 
             int id = getUserIdFromKey(key);
-            boolean isAdmin = UsersTools.isAdmin(id);
+            int isAdmin = UsersTools.isAdmin(id);
 
-            if (!ConferencesTools.isResponsable(key, idC) && !isAdmin)
+            if (isAdmin == 0 && !ConferencesTools.isResponsable(key, idC) )
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
             return new JSONObject().put("inscriptions", InscriptionsTools.getAllInscriptions(idC));

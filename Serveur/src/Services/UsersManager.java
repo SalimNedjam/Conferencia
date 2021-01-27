@@ -1,12 +1,12 @@
 package Services;
 
-import Tools.ErrorJSON;
-import Tools.UsersTools;
+import BDs.AuthsDB;
+import Tools.*;
 import org.json.JSONObject;
 
-import java.sql.Date;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
+
+import static BDs.AuthsDB.getUserIdFromKey;
 
 public class UsersManager {
 
@@ -45,4 +45,34 @@ public class UsersManager {
     }
 
 
+    public static JSONObject inviteAdmin(String key, String email) {
+        if (key == null || email == null
+                || key.equals("") || email.equals("") )
+            return ErrorJSON.serviceRefused("Erreur arguments", -1);
+
+        try {
+
+            if (!AuthsTools.isKeyValid(key))
+                return ErrorJSON.serviceRefused("Clé invalide", 1);
+
+            int id = getUserIdFromKey(key);
+            int isAdmin = UsersTools.isAdmin(id);
+
+            if (isAdmin != 2)
+                return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
+
+
+            if (!UsersTools.existEmail(email))
+                UsersTools.inviteUser(email);
+
+            if(AuthsDB.putAdmin(email))
+                return ErrorJSON.serviceAccepted();
+            else
+                return ErrorJSON.serviceRefused("Operation impossible ", 15);
+
+        } catch (SQLException e) {
+            return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);
+        }
+
+    }
 }

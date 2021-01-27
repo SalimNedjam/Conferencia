@@ -2,7 +2,6 @@ package Tools;
 
 import BDs.UsersDB;
 
-import java.sql.Date;
 import java.sql.SQLException;
 
 public class UsersTools {
@@ -11,15 +10,12 @@ public class UsersTools {
         return UsersDB.insertUser(password, email, nom, prenom, title, institution, address, zip, city, country, phone);
     }
 
-    public static boolean existUser(int userId) throws SQLException {
-        return UsersDB.existUser(userId);
-    }
 
     public static int getUserId(String login) throws SQLException {
         return UsersDB.getUserId(login);
     }
 
-    public static boolean isAdmin(int userId) throws SQLException {
+    public static int isAdmin(int userId) throws SQLException {
         return UsersDB.isAdmin(userId);
     }
 
@@ -27,9 +23,7 @@ public class UsersTools {
         return UsersDB.existEmail(email);
     }
 
-    public static boolean sameUser(String key, int id) throws SQLException {
-        return UsersDB.sameUser(key, id);
-    }
+
 
 
     public static int inviteUser(String email) throws SQLException  {

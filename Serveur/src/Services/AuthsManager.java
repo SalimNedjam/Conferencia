@@ -31,7 +31,7 @@ public class AuthsManager {
             json.put("login", login);
             json.put("key", key);
 
-            if (!UsersTools.isAdmin(userId)) {
+            if (UsersTools.isAdmin(userId) == 0) {
                 JSONObject o = AuthsTools.getUserInfosFromLogin(login);
                 json.put("nom", o.getString("nom"));
                 json.put("prenom", o.getString("prenom"));

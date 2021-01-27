@@ -1,7 +1,6 @@
 package Servlets;
 
 import Services.InscriptionsManager;
-import Services.UsersManager;
 import Tools.ErrorJSON;
 import org.json.JSONObject;
 
@@ -12,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -23,19 +21,9 @@ import java.io.PrintWriter;
         maxRequestSize = 1024 * 1024 * 5 * 5 )
 public class Inscriptions extends HttpServlet {
 
-    private String extractFileName(Part part) {
-        String contentDisp = part.getHeader("content-disposition");
-        String[] items = contentDisp.split(";");
-        for (String s : items) {
-            if (s.trim().startsWith("filename")) {
-                return s.substring(s.indexOf("=") + 2, s.length() - 1);
-            }
-        }
-        return "";
-    }
+
     public static final String JUSTIFICATIFS_FOLDER = "Justificatifs";
 
-    public String uploadPath = JUSTIFICATIFS_FOLDER;
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
