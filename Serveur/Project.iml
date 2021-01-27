@@ -73,5 +73,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="activation" level="project" />
+    <orderEntry type="library" name="pdfbox" level="project" />
+    <orderEntry type="library" name="json-simple" level="project" />
   </component>
 </module>

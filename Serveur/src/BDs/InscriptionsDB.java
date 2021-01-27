@@ -2,6 +2,7 @@ package BDs;
 
 import Tools.Database;
 import Tools.EmailUtil;
+import Tools.Facturation.PDFCreator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -262,6 +263,8 @@ public class InscriptionsDB {
             preparedStmt.setInt(2, idI);
             preparedStmt.executeUpdate();
             if (preparedStmt.executeUpdate() > 0){
+
+
                 final String fromEmail = "Twister.Web.recover@gmail.com";
                 final String emailPass = "qtkskcnkuhmsvwzk";
                 System.out.println("TLSEmail Start");
@@ -277,8 +280,7 @@ public class InscriptionsDB {
                     }
                 };
                 Session session = Session.getInstance(props, auth);
-
-                EmailUtil.sendEmail(session, email, "Votre payement à été accepté.", "Votre payement a été accepter, votre inscription à la conférence est confirmé.\n");
+                EmailUtil.sendEmailWithAttachments(session, email, "Votre payement à été accepté.", "Votre payement a été accepter, votre inscription à la conférence est confirmé.\n", PDFCreator.createPDF(idI));
                 return true;
             }
         }
