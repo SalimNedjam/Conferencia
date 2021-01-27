@@ -63,7 +63,10 @@ public class InscriptionsManager {
             if (!AuthsTools.isKeyValid(key))
                 return ErrorJSON.serviceRefused("Clé invalide", 1);
 
-            if (!ConferencesTools.isResponsable(key, idC))
+            int id = getUserIdFromKey(key);
+            boolean isAdmin = UsersTools.isAdmin(id);
+
+            if (!ConferencesTools.isResponsable(key, idC) && !isAdmin)
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
             return new JSONObject().put("inscriptions", InscriptionsTools.getAllInscriptions(idC));
@@ -160,22 +163,23 @@ public class InscriptionsManager {
             return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);
         }
     }
-    public static JSONObject inviteUser(String key, String email, String idConf, String idType) {
+    public static JSONObject inviteUser(String key, String email, String idConf, String idType, String prepayed) {
         if (key == null || idConf == null || idType == null || email == null
                 || key.equals("") || idConf.equals("") || idType.equals("") || email.equals(""))
             return ErrorJSON.serviceRefused("Erreur arguments", -1);
         int idC, idT, idU, idI;
-        boolean isEarly;
+        boolean isPrepayed, isEarly;
         try {
             try {
 
                 idC = Integer.parseInt(idConf);
                 idT = Integer.parseInt(idType);
-
+                isPrepayed = Boolean.parseBoolean(prepayed);
 
             } catch (Exception e) {
                 return ErrorJSON.serviceRefused("Mauvais type d'arguments", -1);
             }
+
             if (UsersTools.existEmail(email))
                 return ErrorJSON.serviceRefused("Utilisateur déja existant", 2);
 
@@ -187,11 +191,15 @@ public class InscriptionsManager {
 
             idI = InscriptionsTools.addInscription(idU, idC, idT, isEarly);
 
-            if(InscriptionsTools.payInscription(idI, email))
-                return ErrorJSON.serviceAccepted();
-            else
-                return ErrorJSON.serviceRefused("Problem du serveur", 2);
+            if (isPrepayed) {
+                if(InscriptionsTools.payInscription(idI, email)) {
+                    return ErrorJSON.serviceAccepted();
+                } else {
+                    return ErrorJSON.serviceRefused("Problem du serveur", 2);
+                }
+            }
 
+            return ErrorJSON.serviceAccepted();
 
         } catch (SQLException e) {
             return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);

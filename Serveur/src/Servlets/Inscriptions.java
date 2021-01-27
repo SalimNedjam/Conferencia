@@ -26,6 +26,7 @@ public class Inscriptions extends HttpServlet {
         String idInsc = request.getParameter("id_insc");
         String reason = request.getParameter("reason");
         String email = request.getParameter("email");
+        String prepayed = request.getParameter("prepayed");
 
         String key = request.getParameter("key");
         JSONObject json;
@@ -45,7 +46,7 @@ public class Inscriptions extends HttpServlet {
                     json = InscriptionsManager.payInscription(key, idInsc);
                     break;
                 case "invite":
-                    json = InscriptionsManager.inviteUser(key, email, idConf, idType);
+                    json = InscriptionsManager.inviteUser(key, email, idConf, idType, prepayed);
                     break;
                 default:
                     json = ErrorJSON.serviceRefused("Undifined Operation", 5);

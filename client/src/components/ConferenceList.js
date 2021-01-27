@@ -38,19 +38,37 @@ export default class ConferenceList extends Component {
 	renderItem(item) {
 		const {inscriptions} = this.state;
 		if (!inscriptions) return;
-		const subscribed = inscriptions.findIndex((value) => value.id_conf == item.id_conf) >= 0;
+		const index = inscriptions.findIndex((value) => value.id_conf == item.id_conf);
+		let inscription, statut;
+		if (index >= 0) {
+			inscription = inscriptions[index];
+			if (inscription.approved == 0 && inscription.paid == 0) {
+				statut = "En attente de validation";
+			} else if (inscription.approved == 1 && inscription.paid == 0) {
+				statut = "En attente de paiement";
+			} else if (inscription.approved == 2) {
+				statut = "Refusé";
+			} else if (inscription.paid == 1) {
+				statut = "Payé";
+			}
+		}
+
 		return (
 			<a href={"/conf/" + item.id_conf} class="list-group-item list-group-item-action" aria-current="true" key={item.id_conf}>
 				<div class="d-flex w-100 justify-content-between">
 					<h4 class="mb-1">{item.nom}</h4>
-					{subscribed ?
-						<div><span class="badge bg-primary">Inscrit</span></div> :
+					{inscription ?
+						<div><span class="badge bg-primary">{statut}</span></div> :
 						<small>{item.types.length} types d'inscriptions</small>
 					}	
 				</div>
-				<p class="mb-1">{item.description}</p>
-				<small>Fin early  {item.date_clot_early}</small><br></br>
-				<small>Le {item.date_conf}</small>
+				<p>
+					{item.responsable.title} {item.responsable.nom} {item.responsable.prenom}
+					<br></br>
+					{item.description}
+					<br></br>
+					<small>Le {item.date_conf} (fin tarif early le {item.date_clot_early})</small>
+				</p>
 			</a>
 		)
 	}

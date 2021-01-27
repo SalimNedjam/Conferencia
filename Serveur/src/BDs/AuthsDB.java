@@ -413,7 +413,7 @@ public class AuthsDB {
     }
     public static String getEmailFromInsc(int id_insc) throws SQLException {
         String mail = "";
-        String query = " select Mail From Iscriptions i, Users u where  u.user_id = i.user_id and i.id_insc = ?";
+        String query = " select Mail From Inscriptions i, Users u where  u.id_user = i.id_user and i.id_insc = ?";
 
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {

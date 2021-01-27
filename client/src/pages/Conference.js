@@ -18,7 +18,8 @@ class Conference extends Component {
 			loading: false,
 			inscriptions: undefined,
 			inscription: undefined,
-			showModal: false,
+			showRejectModal: false,
+			showUserInfosModal: false,
 		}
 	}
 
@@ -31,7 +32,7 @@ class Conference extends Component {
 			axios.get("http://localhost:8080/Project_war/Conferences?" + params)
 			.then(res => {
 				this.setState({conf: res.data});
-				if (res.data.id_resp != this.props.user.id) {
+				if (res.data.responsable.id_resp != this.props.user.id && !this.props.user.admin) {
 					this.isSubscribed();
 				} else {
 					this.getInscriptions();
@@ -48,10 +49,9 @@ class Conference extends Component {
 		params.append('email', mail);
 		params.append('id_conf', idConf);
 		params.append('id_type', selectedType);
+		params.append('prepayed', this.invitationPrepayed ? 'true' : 'false');
 		params.append('op', 'invite');
-
-		console.log(idConf, selectedType);
-
+		
 		this.setState({loading: true});
 		axios.post("http://localhost:8080/Project_war/Inscriptions", params)
 		.then(res => {
@@ -69,9 +69,9 @@ class Conference extends Component {
 	}
 
 	disapproveInscription(id) {
-		this.setState({showModal: ((reason) => {
+		this.setState({showRejectModal: ((reason) => {
 				this.setInscriptionStatut(id, 'disapprove', reason);
-				this.setState({showModal: false});
+				this.setState({showRejectModal: false});
 		})});
 	}
 
@@ -80,6 +80,7 @@ class Conference extends Component {
 	}
 
 	setInscriptionStatut(id, statut, reason) {
+		console.log(id, statut, reason);
 		if (statut == 'approve' || statut == 'disapprove' || statut == 'pay') {
 			let params = new URLSearchParams();
 			params.append('key', read_cookie("key"));
@@ -92,6 +93,7 @@ class Conference extends Component {
 			this.setState({loading: true});
 			axios.post("http://localhost:8080/Project_war/Inscriptions", params)
 			.then(res => {
+				console.log(res.data);
 				if (res.data.code === undefined) {
 					document.location.reload();
 				}
@@ -116,11 +118,10 @@ class Conference extends Component {
 		const params = new URLSearchParams();
 		params.append('key', read_cookie("key"));
 		params.append('id_conf', this.state.conf.id_conf);
-
 		axios.get("http://localhost:8080/Project_war/Inscriptions?" + params)
 		.then(res => {
+			console.log(res.data);
 			if (res.data.code === undefined) {
-				console.log("INSCRIPTIONS", res.data.inscriptions);
 				this.setState({inscriptions: res.data.inscriptions});
 			}
 		});
@@ -142,17 +143,16 @@ class Conference extends Component {
 		});
 	}
 
-	renderTypes(free) {
+	renderTypes() {
 		const {conf} = this.state;
 		if (conf) return (
-			<div style={{marginRight: 10}}>
+			<div style={{marginRight: 10}} class="w-25">
 				<select 
 					class="form-select m-1"
 					onChange={(e) => {
 						this.setState({selectedType: e.target.value})
 					}}>
 					<option value={0}>Sélectionnez un type</option>
-					{free && <option value={-1}>Gratuit</option>}
 					{conf.types.map((type) => {
 						const tarif = type.is_early ? type.tarif_early : type.tarif_late;
 						return (
@@ -167,13 +167,13 @@ class Conference extends Component {
 	renderSubscribe() {
 		const {conf, selectedType, subscribed} = this.state;
 		if (subscribed === undefined) return;
-		if (conf.id_resp != this.props.user.id && !this.props.user.admin && !subscribed)	return (
+		if (conf.responsable.id_resp != this.props.user.id && !this.props.user.admin && !subscribed)	return (
 			<fieldset disabled={subscribed}>
 				<div class="d-flex flex-row">
 					{this.renderTypes()}
 					<button
 						disabled={selectedType <= 0}
-						class="btn btn-outline-primary" 
+						class="btn btn-outline-primary m-1" 
 						onClick={() => this.subscribeConf()}>
 						S'inscrire
 					</button>
@@ -209,10 +209,11 @@ class Conference extends Component {
 					} else if (inscription.paid == 1) {
 						statut = "Payé";
 					}
+
 					return (
 						<tbody>
 							<tr>
-								<td class="align-middle">{inscription.mail}</td>
+								<td class="align-middle"><a href="javascript:void(0)" onClick={() => this.setState({showUserInfosModal: inscription.user})}>{inscription.user.mail}</a></td>
 								<td class="align-middle">{inscription.type == -1 ? "Gratuit" : (inscription.nom + " -- " + inscription.tarif_early + "€")}</td>
 								<td class="align-middle">{statut}</td>
 								<td>
@@ -249,25 +250,39 @@ class Conference extends Component {
 		)
 	}
 
-
 	renderInscriptions() {
 		const {conf, loading, selectedType, mail} = this.state;
-		if (conf.id_resp == this.props.user.id && !this.props.user.admin)	return (
+		if (conf.responsable.id_resp == this.props.user.id || this.props.user.admin)	return (
 			<fieldset disabled={loading}>
-				<div class="alert alert-primary p-2" role="alert">
-					Vous êtes le responsable de cette conférence
-				</div>
+				{!this.props.user.admin && 
+					<div class="alert alert-primary p-2" role="alert">
+						Vous êtes le responsable de cette conférence
+					</div>
+				}
 				<div>
-					<h5>Inviter un utilisateur</h5>
+					<h5 class="mb-2">Inviter un utilisateur</h5>
 					<div class="d-flex mb-2 flex-row">
 						<input 
 							type="mail"
-							class="form-control m-1 w-50"
+							class="form-control m-1 w-25"
 							onChange={(e) => {
 								this.setState({mail: e.target.value})
 							}}
 							placeholder="Mail"/>
-						{this.renderTypes(true)}
+						{this.renderTypes()}
+						<div class="m-1 form-check w-25 d-flex align-items-center">
+							<label>
+								<input 
+										type="checkbox" 
+										defaultChecked={false}
+										class="form-check-input"
+										onChange={(e) => {
+											this.invitationPrepayed = e.target.checked;
+										}}
+										id={"free-checkbox"}/>
+										Inscription prépayée
+							</label>
+						</div>      
 						<button
 							disabled={selectedType == 0 || !mail || mail.length < 4}
 							class="btn btn-outline-primary m-1 w-25" 
@@ -277,37 +292,71 @@ class Conference extends Component {
 					</div>
 				</div>
 				<div>
-					<h5>Liste des inscrits</h5>
+					<h5 class="mb-2 mt-4">Liste des inscrits</h5>
 					{this.renderListInscriptions()}
 				</div>
 			</fieldset>
 		)
 	}
 
-	renderModal() {
+	renderRejectModal() {
 		this.reason = "";
-		if (this.state.showModal !== false) return (
+		if (this.state.showRejectModal !== false) return (
 			<div class="modal" style={{display: 'block', backgroundColor: '#00000050'}} id="exampleModal" aria-hidden="true">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="exampleModalLabel">Envoyer un refus</h5>
-							<button type="button" class="btn-close" onClick={() => this.setState({showModal: false})}></button>
+							<button type="button" class="btn-close" onClick={() => this.setState({showRejectModal: false})}></button>
 						</div>
 						<div class="modal-body">
-							<p>Indiquez la raison du refus:</p>
+							<p>Indiquez la raison du refus: (min. 10, max. 256 caractères)</p>
 							<textarea 
 								style={{resize: 'none'}}
 								onInput={(e) => {
-										this.reason = {value: e.target.value}
+										this.reason = e.target.value;
 								}}
 								cols={40} 
 								rows={2}
 								maxLength={256}/>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" onClick={() => this.setState({showModal: false})}>Fermer</button>
-							<button type="button" class="btn btn-primary" onClick={() => {this.state.showModal(this.reason)}}>Envoyer</button>
+							<button type="button" class="btn btn-secondary" onClick={() => this.setState({showRejectModal: false})}>Fermer</button>
+							<button type="button" class="btn btn-primary" onClick={() => { 
+								if (this.reason.length >= 10) {
+									this.state.showRejectModal(this.reason)
+								}
+							}}>Envoyer</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+	}
+
+	renderUserInfosModal() {
+		const infos = this.state.showUserInfosModal;
+		if (infos !== false) return (
+			<div class="modal" style={{display: 'block', backgroundColor: '#00000050'}} id="exampleModal" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Informations utilisateur</h5>
+							<button type="button" class="btn-close" onClick={() => this.setState({showUserInfosModal: false})}></button>
+						</div>
+						<div class="modal-body">
+							{Object.keys(infos).map((item) => {
+								if (item !== 'id_user') {
+									return (
+										<div>
+											<p><b>{item[0].toUpperCase() + item.slice(1)}</b>: {infos[item]}</p>
+										</div>
+									)
+								}
+							})}
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" onClick={() => this.setState({showUserInfosModal: false})}>Fermer</button>
 						</div>
 					</div>
 				</div>
@@ -351,9 +400,9 @@ class Conference extends Component {
 		if (conf) return (
 			<div class="box container box-md mt-5 p-3">
 				<h2>{conf.nom}</h2>
-				<p>{conf.description}</p>
-				<p><strong>Date de fin période early:</strong> {conf.date_clot_early}</p>
-				<p><strong>Date de la conférence:</strong> {conf.date_conf}</p>
+				<p><b>Conférencier</b><br></br>{conf.responsable.title} {conf.responsable.nom} {conf.responsable.prenom}</p>
+				<p><b>Description</b><br></br>{conf.description}</p>
+				<p><b>Dates</b><br></br>{conf.date_conf} (fin tarif early le {conf.date_clot_early})</p>
 				<hr></hr>
 				{this.renderSubscribe()}
 				{this.renderInscriptions()}
@@ -369,7 +418,8 @@ class Conference extends Component {
 			<div>
 				<Header/>
 				{this.renderConf()}
-				{this.renderModal()}
+				{this.renderRejectModal()}
+				{this.renderUserInfosModal()}
 			</div>
 		)
 	}

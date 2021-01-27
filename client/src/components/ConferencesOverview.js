@@ -50,7 +50,7 @@ class ConferencesOverview extends Component {
     const { conf } = this.state;
     if (conf === undefined) return <Loading/>;
     if (conf.length == 0) return <div/>;
-    const data = conf.filter((value) => value.id_resp == this.props.user.id);
+    const data = conf.filter((value) => value.responsable.id_resp == this.props.user.id);
 		return (
 			<div class="list-group mb-3">
 				<div class="d-flex flex-row justify-content-between pb-2">

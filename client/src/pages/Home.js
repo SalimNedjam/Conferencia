@@ -44,7 +44,7 @@ class Home extends Component {
 			<div class="container-sm mt-5 d-flex">
 				{this.renderMyInscriptions()}
 				<div class="flex-fill m-2">
-					<ConferencesOverview/>
+					{!this.props.user.admin && <ConferencesOverview/>}
 					{this.renderAllConf()}
 				</div>
 			</div>

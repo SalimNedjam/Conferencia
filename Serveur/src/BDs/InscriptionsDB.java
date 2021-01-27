@@ -208,7 +208,7 @@ public class InscriptionsDB {
                 };
                 Session session = Session.getInstance(props, auth);
 
-                EmailUtil.sendEmail(session, email, "Demande d'inscription à une conférence a été acceptée.", "Votre demande d'inscription à une conférence a été acceptée, vous devez maintenant proceder au payement\n");
+                EmailUtil.sendEmail(session, email, "Demande d'inscription à une conférence a été acceptée.", "Votre demande d'inscription à une conférence a été acceptée, vous devez maintenant proceder au paiement\n");
                 return true;
             } else
                     return false;
