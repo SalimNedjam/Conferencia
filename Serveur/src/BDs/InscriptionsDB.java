@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -35,11 +36,11 @@ public class InscriptionsDB {
     }
 
 
-    public static int addInscription(int userId, int idC, int idT, boolean isEarly) throws SQLException {
-        String query = " insert into Inscriptions (id_user, id_conf, id_type, is_early, approved, paid)" + " values (?, ?, ?, ?, ?, ?)";
+    public static int addInscription(int userId, int idC, int idT, boolean isEarly, InputStream inputStream) throws SQLException {
+        String query = " insert into Inscriptions (id_user, id_conf, id_type, is_early, approved, paid, file)" + " values (?, ?, ?, ?, ?, ?, ?)";
         int id_insc;
         try (Connection conn = Database.getMySQLConnection();
-             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
+             PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStmt.setInt(1, userId);
             preparedStmt.setInt(2, idC);
@@ -47,6 +48,7 @@ public class InscriptionsDB {
             preparedStmt.setBoolean(4, isEarly);
             preparedStmt.setBoolean(5, false);
             preparedStmt.setBoolean(6, false);
+            preparedStmt.setBlob(7, inputStream);
 
             if (preparedStmt.executeUpdate() > 0) {
                     final String fromEmail = "Twister.Web.recover@gmail.com";
@@ -125,6 +127,9 @@ public class InscriptionsDB {
                 conf.put("is_early", rs.getBoolean("is_early"));
                 conf.put("approved", rs.getInt("approved"));
                 conf.put("paid", rs.getBoolean("paid"));
+                conf.put("need_file", rs.getBoolean("need_file"));
+                conf.put("file", rs.getBlob("file"));
+
                 array.put(conf);
             }
         }
@@ -175,6 +180,9 @@ public class InscriptionsDB {
                 conf.put("is_early", rs.getBoolean("is_early"));
                 conf.put("approved", rs.getInt("approved"));
                 conf.put("paid", rs.getBoolean("paid"));
+                conf.put("need_file", rs.getBoolean("need_file"));
+                conf.put("file", rs.getBlob("file"));
+
                 array.put(conf);
             }
         }
@@ -273,7 +281,7 @@ public class InscriptionsDB {
                 };
                 Session session = Session.getInstance(props, auth);
 
-                EmailUtil.sendEmail(session, email, "Votre paiement a été accepté.", "Votre paiement a été accepté, votre inscription à la conférence est confirmée.\n");
+                EmailUtil.sendEmail(session, email, "Votre payement à été accepté.", "Votre payement a été accepter, votre inscription à la conférence est confirmé.\n");
                 return true;
             }
         }

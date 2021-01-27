@@ -1,22 +1,20 @@
 
 package Tools;
 
-import BDs.ConferencesDB;
 import BDs.InscriptionsDB;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.sql.Date;
+import java.io.InputStream;
 import java.sql.SQLException;
 
 public class InscriptionsTools {
 
 
 
-    public static int addInscription(int id_user, int idC, int idT, boolean isEarly)  throws SQLException {
+    public static int addInscription(int id_user, int idC, int idT, boolean isEarly, InputStream inputStream)  throws SQLException {
 
-        return InscriptionsDB.addInscription(id_user, idC, idT, isEarly);
+        return InscriptionsDB.addInscription(id_user, idC, idT, isEarly,inputStream);
     }
 
 

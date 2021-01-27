@@ -393,7 +393,7 @@ public class AuthsDB {
     }
     public static String getEmailFromKey(String key) throws SQLException {
         String mail = "";
-        String query = " select Mail From Session s, Users u where s.key_session=? and u.id_user = s.id_user";
+        String query = " select Mail From Session s, Users u where s.key_session=? and u.user_id = s.user_id";
 
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
@@ -413,7 +413,7 @@ public class AuthsDB {
     }
     public static String getEmailFromInsc(int id_insc) throws SQLException {
         String mail = "";
-        String query = " select Mail From Inscriptions i, Users u where  u.id_user = i.id_user and i.id_insc = ?";
+        String query = " select Mail From Inscriptions i, Users u where  u.user_id = i.user_id and i.id_insc = ?";
 
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {

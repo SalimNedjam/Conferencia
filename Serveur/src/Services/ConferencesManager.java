@@ -57,36 +57,7 @@ public class ConferencesManager {
         }
     }
 
-    public static JSONObject addTypeConference(String key, String idConf, String nom, String tarifEarly, String tarifLate) {
-        int early, late, idC;
-        if (key == null || nom == null || idConf == null || tarifEarly == null || tarifLate == null ||
-                key.equals("") || nom.equals("") || idConf.equals("") || tarifEarly.equals("") || tarifLate.equals(""))
-            return ErrorJSON.serviceRefused("Erreur arguments", -1);
-        try {
-            try {
-                nom = nom.substring(0, 1).toUpperCase() + nom.substring(1).toLowerCase();
-                early = Integer.parseInt(tarifEarly);
-                late = Integer.parseInt(tarifLate);
-                idC = Integer.parseInt(idConf);
-            } catch (Exception e) {
-                return ErrorJSON.serviceRefused("Mauvais type d'arguments", -1);
-            }
-            if (!AuthsTools.isKeyValid(key))
-                return ErrorJSON.serviceRefused("Clé invalide", 1);
 
-            if (!ConferencesTools.isResponsable(key, idC))
-                return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
-
-            if(ConferencesTools.addTypeConference(nom, idC, early, late))
-                return ErrorJSON.serviceAccepted();
-            else
-                return ErrorJSON.serviceRefused("Problem du serveur", 2);
-
-
-        } catch (SQLException e) {
-            return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);
-        }
-    }
     public static JSONObject getAllConference(String key) {
 
         if (key == null || key.equals(""))

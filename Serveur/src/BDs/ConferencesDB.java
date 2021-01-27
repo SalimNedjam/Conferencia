@@ -57,10 +57,11 @@ public class ConferencesDB {
                     conf.put("id_conf", conf_id);
                     for (String type : types) {
                         String[] args = type.split("\\;", -1);
-                        int early, late;
+                        int early, late, need_file;
                         early = Integer.parseInt(args[1]);
                         late = Integer.parseInt(args[2]);
-                        addTypeConference(args[0], conf_id, early, late);
+                        need_file = Integer.parseInt(args[3]);
+                        addTypeConference(args[0], conf_id, early, late, need_file);
                     }
                 }
                 else {
@@ -72,8 +73,8 @@ public class ConferencesDB {
         return conf;
     }
 
-    public static boolean addTypeConference(String nom, int idC, int early, int late) throws SQLException {
-        String query = " insert into Conference_type (id_conf, nom, tarif_early, tarif_late)" + " values (?, ?, ?, ?)";
+    public static boolean addTypeConference(String nom, int idC, int early, int late, int need_file) throws SQLException {
+        String query = " insert into Conference_type (id_conf, nom, tarif_early, tarif_late, need_file)" + " values (?, ?, ?, ?, ?)";
 
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {
@@ -82,6 +83,7 @@ public class ConferencesDB {
             preparedStmt.setString(2, nom);
             preparedStmt.setInt(3, early);
             preparedStmt.setInt(4, late);
+            preparedStmt.setInt(5, need_file);
 
             if (preparedStmt.executeUpdate() > 0)
                 return true;
@@ -138,6 +140,7 @@ public class ConferencesDB {
                     type.put("nom", rs2.getString("nom"));
                     type.put("tarif_early", rs2.getInt("tarif_early"));
                     type.put("tarif_late", rs2.getInt("tarif_late"));
+                    type.put("need_file", rs2.getInt("need_file"));
 
                     arrayType.put(type);
                 }
@@ -195,6 +198,7 @@ public class ConferencesDB {
                     type.put("nom", rs2.getString("nom"));
                     type.put("tarif_early", rs2.getInt("tarif_early"));
                     type.put("tarif_late", rs2.getInt("tarif_late"));
+                    type.put("need_file", rs2.getInt("need_file"));
 
                     arrayType.put(type);
                 }

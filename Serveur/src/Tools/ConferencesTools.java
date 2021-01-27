@@ -19,10 +19,6 @@ public class ConferencesTools {
         return ConferencesDB.addConference(id, types, nom, dateClotEarly, dateConf, fieldSet, description);
     }
 
-    public static boolean addTypeConference(String nom, int idC, int early, int late)  throws SQLException {
-        return ConferencesDB.addTypeConference(nom, idC, early, late);
-
-    }
 
     public static boolean isResponsable(String key, int idC) throws SQLException {
 

@@ -1,17 +1,19 @@
 package Services;
 
 import BDs.AuthsDB;
+import BDs.InscriptionsDB;
 import Tools.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.sql.SQLException;
 
 import static BDs.AuthsDB.getUserIdFromKey;
 
 public class InscriptionsManager {
 
-    public static JSONObject addInscription(String key, String idConf, String idType)  {
+    public static JSONObject addInscription(String key, String idConf, String idType, InputStream inputStream)  {
         int idC, idT;
         boolean isEarly;
         if (key == null || idConf == null || idType == null
@@ -35,7 +37,7 @@ public class InscriptionsManager {
             isEarly = ConferencesTools.isEarly(idC);
             int userId = getUserIdFromKey(key);
 
-            if(InscriptionsTools.addInscription(userId, idC, idT, isEarly)>0)
+            if(InscriptionsTools.addInscription(userId, idC, idT, isEarly, inputStream)>0)
                 return ErrorJSON.serviceAccepted();
             else
                 return ErrorJSON.serviceRefused("Problem du serveur", 2);
@@ -163,43 +165,44 @@ public class InscriptionsManager {
             return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);
         }
     }
-    public static JSONObject inviteUser(String key, String email, String idConf, String idType, String prepayed) {
-        if (key == null || idConf == null || idType == null || email == null
-                || key.equals("") || idConf.equals("") || idType.equals("") || email.equals(""))
+    public static JSONObject inviteUser(String key, String email, String idConf, String idType, String isPaid) {
+        if (key == null || idConf == null || idType == null || email == null || isPaid == null
+                || key.equals("") || idConf.equals("") || idType.equals("") || email.equals("") || isPaid.equals(""))
             return ErrorJSON.serviceRefused("Erreur arguments", -1);
-        int idC, idT, idU, idI;
-        boolean isPrepayed, isEarly;
+        int idC, idT, idU, idI, paid;
+        boolean isEarly;
         try {
             try {
 
                 idC = Integer.parseInt(idConf);
                 idT = Integer.parseInt(idType);
-                isPrepayed = Boolean.parseBoolean(prepayed);
+                paid = Integer.parseInt(isPaid);
 
             } catch (Exception e) {
                 return ErrorJSON.serviceRefused("Mauvais type d'arguments", -1);
             }
 
-            if (UsersTools.existEmail(email))
-                return ErrorJSON.serviceRefused("Utilisateur déja existant", 2);
-
             if (!ConferencesTools.isResponsable(key, idC))
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
-            idU = UsersTools.inviteUser(email);
             isEarly = ConferencesTools.isEarly(idC);
 
-            idI = InscriptionsTools.addInscription(idU, idC, idT, isEarly);
+            if (!UsersTools.existEmail(email)) {
+                idU = UsersTools.inviteUser(email);
 
-            if (isPrepayed) {
-                if(InscriptionsTools.payInscription(idI, email)) {
-                    return ErrorJSON.serviceAccepted();
-                } else {
-                    return ErrorJSON.serviceRefused("Problem du serveur", 2);
-                }
+            } else {
+                idU = AuthsDB.getIdFromEmail(email);
+            }
+
+            idI = InscriptionsTools.addInscription(idU, idC, idT, isEarly, null);
+            InscriptionsDB.approveInscription(idI, email);
+
+            if(paid > 0) {
+                InscriptionsTools.payInscription(idI, email);
             }
 
             return ErrorJSON.serviceAccepted();
+
 
         } catch (SQLException e) {
             return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);
