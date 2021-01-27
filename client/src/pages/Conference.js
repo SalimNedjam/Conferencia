@@ -13,9 +13,12 @@ class Conference extends Component {
 		this.state = {
 			conf: null,
 			selectedType: 0,
-			subscribed: false,
+			mail: undefined,
+			subscribed: undefined,
 			loading: false,
 			inscriptions: undefined,
+			inscription: undefined,
+			showModal: false,
 		}
 	}
 
@@ -37,13 +40,54 @@ class Conference extends Component {
 		}
 	}
 
-	setInscriptionStatut(id, statut) {
-		console.log(id);
-		if (statut == 'approve' || statut == 'disapprove') {
+	inviteUser(idConf) {
+		const {mail, selectedType} = this.state;
+		if (!mail || mail.length < 4) return; 
+		let params = new URLSearchParams();
+		params.append('key', read_cookie("key"));
+		params.append('email', mail);
+		params.append('id_conf', idConf);
+		params.append('id_type', selectedType);
+		params.append('op', 'invite');
+
+		console.log(idConf, selectedType);
+
+		this.setState({loading: true});
+		axios.post("http://localhost:8080/Project_war/Inscriptions", params)
+		.then(res => {
+			console.log(res.data);
+			if (res.data.code === undefined) {
+				document.location.reload();
+			} else {
+				this.setState({loading: false});
+			}
+		});
+	}
+
+	approveInscription(id) {
+		this.setInscriptionStatut(id, 'approve');
+	}
+
+	disapproveInscription(id) {
+		this.setState({showModal: ((reason) => {
+				this.setInscriptionStatut(id, 'disapprove', reason);
+				this.setState({showModal: false});
+		})});
+	}
+
+	payInscription(id) {
+		this.setInscriptionStatut(id, 'pay');
+	}
+
+	setInscriptionStatut(id, statut, reason) {
+		if (statut == 'approve' || statut == 'disapprove' || statut == 'pay') {
 			let params = new URLSearchParams();
 			params.append('key', read_cookie("key"));
 			params.append('id_insc', id);
 			params.append('op', statut);
+			if (reason && reason.length < 256) {
+				params.append('reason', reason);
+			}
 
 			this.setState({loading: true});
 			axios.post("http://localhost:8080/Project_war/Inscriptions", params)
@@ -63,7 +107,7 @@ class Conference extends Component {
 		.then(res => {
 			if (res.data.code === undefined) {
 				const i = res.data.inscriptions.findIndex((value) => value.id_conf == this.props.match.params.id)
-				this.setState({subscribed: (i >= 0)});
+				this.setState({subscribed: (i >= 0), inscription: (i >= 0 ? res.data.inscriptions[i] : undefined)});
 			}
 		});
 	}
@@ -76,6 +120,7 @@ class Conference extends Component {
 		axios.get("http://localhost:8080/Project_war/Inscriptions?" + params)
 		.then(res => {
 			if (res.data.code === undefined) {
+				console.log("INSCRIPTIONS", res.data.inscriptions);
 				this.setState({inscriptions: res.data.inscriptions});
 			}
 		});
@@ -97,16 +142,17 @@ class Conference extends Component {
 		});
 	}
 
-	renderTypes() {
+	renderTypes(free) {
 		const {conf} = this.state;
 		if (conf) return (
 			<div style={{marginRight: 10}}>
 				<select 
-					class="form-select"
+					class="form-select m-1"
 					onChange={(e) => {
 						this.setState({selectedType: e.target.value})
 					}}>
 					<option value={0}>Sélectionnez un type</option>
+					{free && <option value={-1}>Gratuit</option>}
 					{conf.types.map((type) => {
 						const tarif = type.is_early ? type.tarif_early : type.tarif_late;
 						return (
@@ -120,13 +166,9 @@ class Conference extends Component {
 
 	renderSubscribe() {
 		const {conf, selectedType, subscribed} = this.state;
-		if (conf.id_resp != this.props.user.id && !this.props.user.admin)	return (
+		if (subscribed === undefined) return;
+		if (conf.id_resp != this.props.user.id && !this.props.user.admin && !subscribed)	return (
 			<fieldset disabled={subscribed}>
-					{this.state.subscribed &&
-					<div class="alert alert-primary p-2" role="alert">
-						Vous êtes déjà inscrit à cette conférence
-					</div>
-					}
 				<div class="d-flex flex-row">
 					{this.renderTypes()}
 					<button
@@ -137,7 +179,7 @@ class Conference extends Component {
 					</button>
 				</div>
 			</fieldset>
-		)
+		) 
 	}
 
 	renderListInscriptions() {
@@ -161,7 +203,9 @@ class Conference extends Component {
 						pending = true;
 						statut = "En attente de validation";
 					} else if (inscription.approved == 1 && inscription.paid == 0) {
-						statut = "Validé";
+						statut = "En attente de paiement";
+					} else if (inscription.approved == 2) {
+						statut = "Refusé";
 					} else if (inscription.paid == 1) {
 						statut = "Payé";
 					}
@@ -169,14 +213,14 @@ class Conference extends Component {
 						<tbody>
 							<tr>
 								<td class="align-middle">{inscription.mail}</td>
-								<td class="align-middle">{inscription.nom} -- {inscription.tarif_early}€</td>
+								<td class="align-middle">{inscription.type == -1 ? "Gratuit" : (inscription.nom + " -- " + inscription.tarif_early + "€")}</td>
 								<td class="align-middle">{statut}</td>
 								<td>
 									{pending &&
 										<button 
 											type="button"
 											class="btn btn-link" 
-											onClick={() => this.setInscriptionStatut(inscription.id_insc, 'approve')}>
+											onClick={() => this.approveInscription(inscription.id_insc)}>
 											Valider
 										</button>
 									}
@@ -186,7 +230,7 @@ class Conference extends Component {
 										<button 
 											type="button"
 											class="btn btn-link" 
-											onClick={() => this.setInscriptionStatut(inscription.id_insc, 'disapprove')}>
+											onClick={() => this.disapproveInscription(inscription.id_insc)}>
 											Refuser
 										</button>
 									}
@@ -205,18 +249,101 @@ class Conference extends Component {
 		)
 	}
 
+
 	renderInscriptions() {
-		const {conf, loading} = this.state;
+		const {conf, loading, selectedType, mail} = this.state;
 		if (conf.id_resp == this.props.user.id && !this.props.user.admin)	return (
 			<fieldset disabled={loading}>
 				<div class="alert alert-primary p-2" role="alert">
 					Vous êtes le responsable de cette conférence
 				</div>
-				<div class="d-flex flex-row">
+				<div>
+					<h5>Inviter un utilisateur</h5>
+					<div class="d-flex mb-2 flex-row">
+						<input 
+							type="mail"
+							class="form-control m-1 w-50"
+							onChange={(e) => {
+								this.setState({mail: e.target.value})
+							}}
+							placeholder="Mail"/>
+						{this.renderTypes(true)}
+						<button
+							disabled={selectedType == 0 || !mail || mail.length < 4}
+							class="btn btn-outline-primary m-1 w-25" 
+							onClick={() => this.inviteUser(conf.id_conf)}>
+							Inviter
+						</button>
+					</div>
+				</div>
+				<div>
+					<h5>Liste des inscrits</h5>
 					{this.renderListInscriptions()}
 				</div>
 			</fieldset>
 		)
+	}
+
+	renderModal() {
+		this.reason = "";
+		if (this.state.showModal !== false) return (
+			<div class="modal" style={{display: 'block', backgroundColor: '#00000050'}} id="exampleModal" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Envoyer un refus</h5>
+							<button type="button" class="btn-close" onClick={() => this.setState({showModal: false})}></button>
+						</div>
+						<div class="modal-body">
+							<p>Indiquez la raison du refus:</p>
+							<textarea 
+								style={{resize: 'none'}}
+								onInput={(e) => {
+										this.reason = {value: e.target.value}
+								}}
+								cols={40} 
+								rows={2}
+								maxLength={256}/>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" onClick={() => this.setState({showModal: false})}>Fermer</button>
+							<button type="button" class="btn btn-primary" onClick={() => {this.state.showModal(this.reason)}}>Envoyer</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		)
+	}
+
+	renderStatut() {
+		const {inscription} = this.state;
+		if (inscription) {
+			let statut, pending;
+			if (inscription.approved == 0 && inscription.paid == 0) {
+				statut = "En attente de validation";
+			} else if (inscription.approved == 1 && inscription.paid == 0) {
+				statut = "En attente de paiement";
+				pending = true;
+			} else if (inscription.approved == 2) {
+				statut = "Refusé";
+			} else if (inscription.paid == 1) {
+				statut = "Payé";
+			}
+			return (
+				<div>
+					<div class="alert alert-primary p-2" role="alert">
+						Votre inscription est <b>{statut}</b>
+					</div>
+					{pending &&
+						<button
+							class="btn btn-primary" 
+							onClick={() => this.payInscription(inscription.id_insc)}>
+							Payer votre inscription
+						</button>
+					}
+				</div>
+			)
+		}
 	}
 
 	renderConf() {
@@ -230,6 +357,7 @@ class Conference extends Component {
 				<hr></hr>
 				{this.renderSubscribe()}
 				{this.renderInscriptions()}
+				{this.renderStatut()}
 			</div>
 		);
 
@@ -241,6 +369,7 @@ class Conference extends Component {
 			<div>
 				<Header/>
 				{this.renderConf()}
+				{this.renderModal()}
 			</div>
 		)
 	}

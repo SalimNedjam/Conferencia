@@ -65,9 +65,9 @@ export default class InscriptionList extends Component {
         if (filter === 'pending') {
           return item.approved == 0 && item.paid == 0;
         } else if (filter === 'approved') {
-          return item.approved == 1;
+          return item.approved == 1 && item.paid == 0;
         } else if (filter === 'paid') {
-          return item.paid == 1;
+          return item.paid == 1 && item.approved == 1;
         }
 				return false;
 			});

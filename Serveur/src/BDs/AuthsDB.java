@@ -393,7 +393,7 @@ public class AuthsDB {
     }
     public static String getEmailFromKey(String key) throws SQLException {
         String mail = "";
-        String query = " select Mail From Session s, Users u where s.key_session=? and u.user_id = s.user_id";
+        String query = " select Mail From Session s, Users u where s.key_session=? and u.id_user = s.id_user";
 
         try (Connection conn = Database.getMySQLConnection();
              PreparedStatement preparedStmt = conn.prepareStatement(query)) {

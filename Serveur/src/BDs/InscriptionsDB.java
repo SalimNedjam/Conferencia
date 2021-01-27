@@ -273,7 +273,7 @@ public class InscriptionsDB {
                 };
                 Session session = Session.getInstance(props, auth);
 
-                EmailUtil.sendEmail(session, email, "Votre payement à été accepté.", "Votre payement a été accepter, votre inscription à la conférence est confirmé.\n");
+                EmailUtil.sendEmail(session, email, "Votre paiement a été accepté.", "Votre paiement a été accepté, votre inscription à la conférence est confirmée.\n");
                 return true;
             }
         }

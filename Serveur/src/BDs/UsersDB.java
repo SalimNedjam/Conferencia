@@ -266,7 +266,7 @@ public class UsersDB {
                 };
                 Session session = Session.getInstance(props, auth);
 
-                EmailUtil.sendEmail(session, email, "Vous avez été invité dans le site Conferentia", "Vous avez été invité dans le site Conferentia, votre email est: " +email+ " et votre mot de passe est: "+password);
+                EmailUtil.sendEmail(session, email, "Vous avez été invité dans le site Conferentia", "Vous avez été invité dans le site Conferentia: http://localhost:3000/login\n Votre identifiant: " +email+ " \nVotre mot de passe: "+password);
 
 
             } catch (SQLException e) {
