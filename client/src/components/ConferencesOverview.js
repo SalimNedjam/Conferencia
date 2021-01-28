@@ -38,19 +38,12 @@ class ConferencesOverview extends Component {
     )
 	}
 
-	renderEmpty() {
-		return (
-			<div>
-				<p class="text-secondary">Aucune conférence</p>
-			</div>
-		)
-	}
-
 	render() {
     const { conf } = this.state;
     if (conf === undefined) return <Loading/>;
     if (conf.length == 0) return <div/>;
-    const data = conf.filter((value) => value.responsable.id_resp == this.props.user.id);
+		const data = conf.filter((value) => value.responsable.id_resp == this.props.user.id);
+		if (data.length == 0) return <div/>;
 		return (
 			<div class="list-group mb-3">
 				<div class="d-flex flex-row justify-content-between pb-2">

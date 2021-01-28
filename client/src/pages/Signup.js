@@ -102,10 +102,10 @@ export default class Signup extends Component {
                 index = Object.keys(FORM)[index];
                 if (!FORM[index].verify) {
                     params.append(index, this.inputs[index].value);
-                    console.log(this.inputs[index].value);
                 }
 			}
-			
+            
+            params.append('op', 'user');
 			this.setState({loading: true});
 
             axios.post("http://localhost:8080/Project_war/CreateUser", params)

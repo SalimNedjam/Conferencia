@@ -8,6 +8,10 @@
           <element id="library" level="module" name="json-org.jar" module-name="Project" />
           <element id="library" level="module" name="mysql-connector-java-8.0.15.jar" module-name="Project" />
           <element id="library" level="module" name="mongo-java-driver-3.10.1.jar" module-name="Project" />
+          <element id="library" level="project" name="pdfbox" />
+          <element id="library" level="project" name="activation" />
+          <element id="library" level="project" name="json-simple" />
+          <element id="library" level="module" name="servlet-api.jar" module-name="Project" />
         </element>
       </element>
     </root>

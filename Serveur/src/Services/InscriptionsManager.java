@@ -118,7 +118,7 @@ public class InscriptionsManager {
             if (!AuthsTools.isKeyValid(key))
                 return ErrorJSON.serviceRefused("Clé invalide", 1);
 
-            if (!InscriptionsTools.isResponsableOfInscription(key, idI))
+            if (!InscriptionsTools.isResponsableOfInscription(key, idI) && !AuthsTools.isStaff(key))
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
             email = AuthsDB.getEmailFromInsc(idI);
@@ -182,7 +182,7 @@ public class InscriptionsManager {
                 return ErrorJSON.serviceRefused("Mauvais type d'arguments", -1);
             }
 
-            if (!ConferencesTools.isResponsable(key, idC))
+            if (!ConferencesTools.isResponsable(key, idC) && !AuthsTools.isStaff(key))
                 return ErrorJSON.serviceRefused("Vous n'avez pas les droits", 1);
 
             isEarly = ConferencesTools.isEarly(idC);

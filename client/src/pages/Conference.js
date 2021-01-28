@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import Header from '../components/Header';
 import Loading from '../components/Loading';
+import Button from '../components/Button';
 
 class Conference extends Component {
 
@@ -13,6 +14,8 @@ class Conference extends Component {
 		this.state = {
 			conf: null,
 			selectedType: 0,
+			needFile: false,
+			uploadedFile: false,
 			mail: undefined,
 			subscribed: undefined,
 			loading: false,
@@ -49,7 +52,7 @@ class Conference extends Component {
 		params.append('email', mail);
 		params.append('id_conf', idConf);
 		params.append('id_type', selectedType);
-		params.append('prepayed', this.invitationPrepayed ? 'true' : 'false');
+		params.append('paid', this.invitationPrepayed ? 1 : 0);
 		params.append('op', 'invite');
 		
 		this.setState({loading: true});
@@ -96,6 +99,8 @@ class Conference extends Component {
 				console.log(res.data);
 				if (res.data.code === undefined) {
 					document.location.reload();
+				} else {
+					this.setState({loading: false});
 				}
 			});
 		}
@@ -135,10 +140,15 @@ class Conference extends Component {
 		params.append('id_conf', this.props.match.params.id);
 		params.append('id_type', this.state.selectedType);
 	
+
+		this.setState({loading: true});
+
 		axios.post("http://localhost:8080/Project_war/Inscriptions", params)
 		.then(res => {
 			if (res.data.code === undefined) {
 				document.location.reload();
+			} else {
+				this.setState({loading: false});
 			}
 		});
 	}
@@ -150,13 +160,15 @@ class Conference extends Component {
 				<select 
 					class="form-select m-1"
 					onChange={(e) => {
-						this.setState({selectedType: e.target.value})
+						const v = e.target.value.split("-");
+						console.log(v);
+						this.setState({selectedType: v[0], needFile: v[1] == 1})
 					}}>
 					<option value={0}>Sélectionnez un type</option>
 					{conf.types.map((type) => {
 						const tarif = type.is_early ? type.tarif_early : type.tarif_late;
 						return (
-							<option value={type.id_type}>{type.nom} -- {tarif}€</option>
+							<option value={type.id_type + "-" + type.need_file}>{type.nom} -- {tarif}€</option>
 						)
 					})}
 				</select>
@@ -165,18 +177,27 @@ class Conference extends Component {
 	}
 
 	renderSubscribe() {
-		const {conf, selectedType, subscribed} = this.state;
+		const {conf, selectedType, subscribed, needFile, uploadedFile} = this.state;
 		if (subscribed === undefined) return;
 		if (conf.responsable.id_resp != this.props.user.id && !this.props.user.admin && !subscribed)	return (
 			<fieldset disabled={subscribed}>
 				<div class="d-flex flex-row">
 					{this.renderTypes()}
-					<button
-						disabled={selectedType <= 0}
+					{needFile && 
+						<button
+							type="button"
+							name="add-file"
+							onClick={() => {this.setState({uploadedFile: true})}}
+							class={"btn m-1 w-25 " + (uploadedFile ? "btn-outline-primary" : "btn-primary")}>
+							{uploadedFile ? "Fichier téléversé" : "Téléverser le justificatif"}
+						</button>
+					}
+					<Button
+						loading={this.state.loading}
+						disabled={(selectedType <= 0) || (needFile && !uploadedFile)}
 						class="btn btn-outline-primary m-1" 
-						onClick={() => this.subscribeConf()}>
-						S'inscrire
-					</button>
+						onClick={() => this.subscribeConf()}
+						title="S'inscrire"/>
 				</div>
 			</fieldset>
 		) 
@@ -187,15 +208,15 @@ class Conference extends Component {
 		if (inscriptions === undefined) return <Loading/>;
 		if (inscriptions.length > 0) return (
 			<table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th scope="col">Mail</th>
-                        <th scope="col">Type d'inscription</th>
-                        <th scope="col">Statut</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
+				<thead>
+						<tr>
+								<th scope="col">Mail</th>
+								<th scope="col">Type d'inscription</th>
+								<th scope="col">Statut</th>
+								<th scope="col"></th>
+								<th scope="col"></th>
+						</tr>
+				</thead>
 				{inscriptions.map((inscription, index) => {
 					let statut;
 					let pending = false;
@@ -282,13 +303,13 @@ class Conference extends Component {
 										id={"free-checkbox"}/>
 										Inscription prépayée
 							</label>
-						</div>      
-						<button
+						</div>     
+						<Button
+							loading={this.state.loading}
 							disabled={selectedType == 0 || !mail || mail.length < 4}
 							class="btn btn-outline-primary m-1 w-25" 
-							onClick={() => this.inviteUser(conf.id_conf)}>
-							Inviter
-						</button>
+							onClick={() => this.inviteUser(conf.id_conf)}
+							title="Inviter"/>
 					</div>
 				</div>
 				<div>
@@ -369,14 +390,14 @@ class Conference extends Component {
 		if (inscription) {
 			let statut, pending;
 			if (inscription.approved == 0 && inscription.paid == 0) {
-				statut = "En attente de validation";
+				statut = "en attente de validation";
 			} else if (inscription.approved == 1 && inscription.paid == 0) {
-				statut = "En attente de paiement";
+				statut = "en attente de paiement";
 				pending = true;
 			} else if (inscription.approved == 2) {
-				statut = "Refusé";
+				statut = "refusée";
 			} else if (inscription.paid == 1) {
-				statut = "Payé";
+				statut = "payée";
 			}
 			return (
 				<div>
@@ -384,11 +405,12 @@ class Conference extends Component {
 						Votre inscription est <b>{statut}</b>
 					</div>
 					{pending &&
-						<button
+						<Button
+							loading={this.state.loading}
 							class="btn btn-primary" 
-							onClick={() => this.payInscription(inscription.id_insc)}>
-							Payer votre inscription
-						</button>
+							onClick={() => this.payInscription(inscription.id_insc)}
+							title="Payer votre inscription"/>
+							
 					}
 				</div>
 			)

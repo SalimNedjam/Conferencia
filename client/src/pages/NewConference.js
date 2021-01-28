@@ -93,7 +93,8 @@ export default class NewConference extends Component {
         this.state = {
             types: [],
             errors: {},
-			loading: false,
+            loading: false,
+            needFile: false,
         };
         
         this.inputs = [];
@@ -124,7 +125,7 @@ export default class NewConference extends Component {
             params.append("key", read_cookie("key"));
             let types = [];
             for (let t of this.state.types) {
-                types.push(`${t.name};${t.early};${t.late}`);
+                types.push(`${t.name};${t.early};${t.late};${t.need_file ? 1 : 0}`);
             }
             types = types.join("&");
             params.append("types", types);
@@ -152,11 +153,13 @@ export default class NewConference extends Component {
                 name: this.typeInputName.value,
                 early: this.typeInputEarly.value,
                 late: this.typeInputLate.value,
+                need_file: this.state.needFile,
             }] 
         });
         this.typeInputName.value = "";
         this.typeInputEarly.value = 0;
         this.typeInputLate.value = 0;
+        this.setState({needFile: false});
     }
 
     checkForm() {
@@ -280,6 +283,7 @@ export default class NewConference extends Component {
                         <th scope="col">Nom</th>
                         <th scope="col">Prix early</th>
                         <th scope="col">Prix late</th>
+                        <th scope="col">Justificatif</th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
@@ -289,6 +293,7 @@ export default class NewConference extends Component {
                             <td class="align-middle">{type.name}</td>
                             <td class="align-middle">{type.early}</td>
                             <td class="align-middle">{type.late}</td>
+                            <td class="align-middle">{type.need_file ? 'oui' : 'non'}</td>
                             <td>
                                 <button 
                                     type="button"
@@ -343,6 +348,19 @@ export default class NewConference extends Component {
                             this.typeInputLate = input;
                         }}
                         placeholder="Prix late"/>
+                    <div class="m-1 form-check w-25 d-flex align-items-center">
+                        <label>
+                            <input 
+                                type="checkbox" 
+                                defaultChecked={false}
+                                class="form-check-input"
+                                onChange={(e) => {
+                                    this.setState({needFile: e.target.checked});
+                                }}
+                                id={"need-file-checkbox"}/>
+                                Justificatif
+                        </label>
+                    </div>     
                     <button
                         type="button"
                         name="add"

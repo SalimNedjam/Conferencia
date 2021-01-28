@@ -84,7 +84,7 @@ export default class ConferenceList extends Component {
 	render() {
 		let data = this.state.data;
 		if (!data) return (
-			<div>prout</div>
+			<div></div>
 		)
 		if (this.props.filter != 'all') {
 			data = data.filter((item) => {
