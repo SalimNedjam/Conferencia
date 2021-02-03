@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import {read_cookie} from 'sfcookies';
 import axios from 'axios';
-import request from 'request';
 
 import Header from '../components/Header';
 import Loading from '../components/Loading';
@@ -128,6 +127,16 @@ class Conference extends Component {
 			}
 		});
 	}
+	tokenConfigMultiPart = () => {
+
+        const config = {
+            headers: {
+				"Content-Type": "multipart/form-data; boundary=--------------------------811161660471543283806813",            }
+        };
+
+        return config;
+	};
+	
 
 	subscribeConf() {
 		const { selectedType, selectedFile } = this.state;
@@ -152,25 +161,25 @@ class Conference extends Component {
 			});
 		} else {
 			const data = new FormData();
-			data.append('key', read_cookie("key"));
-			data.append('op', 'subscribe');
-			data.append('id_conf', this.props.match.params.id);
-			data.append('id_type', selectedType);
-			data.append('file', selectedFile);
 
-			var options = {
-				'method': 'POST',
-				'url': 'http://localhost:8080/Project_war/Inscriptions',
-				'headers': {
-				},
-				formData: data,
+			const key = read_cookie("key")
+			const id_conf = this.props.match.params.id
+			const id_type = selectedType
+			let blob = new Blob(["<html>…</html>"], {type: 'text/html'});
+			data.append("file", blob)
+
+			var requestOptions = {
+			  method: 'POST',
+			  body: data,
+			  redirect: 'follow'
 			};
+			
+			fetch('http://localhost:8080/Project_war/Inscriptions?key='+key+'&id_conf='+id_conf+'&id_type='+id_type+'&op=subscribe&is_file=1', requestOptions)
+			  .then(response => response.text())
+			  .then(result => console.log(result))
+			  .catch(error => console.log('error', error));
 
-			request(options, function (error, response) {
-				if (error) throw new Error(error);
-				console.log(response.body);
-			});
-		}
+			}
 	}
 
 	renderTypes() {

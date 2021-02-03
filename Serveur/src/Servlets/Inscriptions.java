@@ -16,7 +16,9 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 
 @WebServlet(name = "Inscriptions")
-
+@MultipartConfig( fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 1024 * 1024 * 5,
+        maxRequestSize = 1024 * 1024 * 5 * 5 )
 public class Inscriptions extends HttpServlet {
 
 
@@ -32,7 +34,7 @@ public class Inscriptions extends HttpServlet {
         String reason = request.getParameter("reason");
         String email = request.getParameter("email");
         String isPaid = request.getParameter("paid");
-        String isFile = request.getParameter("file");
+        String isFile = request.getParameter("is_file");
 
         String key = request.getParameter("key");
 
@@ -42,12 +44,19 @@ public class Inscriptions extends HttpServlet {
         if(operation != null) {
             switch (operation) {
                 case "subscribe":
-                    InputStream inputStream = null;
+                    InputStream inputStream= null;
+
                     if (isFile!=null) {
                         Part filePart = request.getPart("file");
+                        System.out.println(filePart.getName());
+                        System.out.println(filePart.getSize());
+                        System.out.println(filePart.getContentType());
                         inputStream = filePart.getInputStream();
+
+
                     }
                     json = InscriptionsManager.addInscription(key, idConf, idType, inputStream);
+
                     break;
                 case "approve":
                     json = InscriptionsManager.approveInscription(key, idInsc, 1, reason);
