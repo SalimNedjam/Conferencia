@@ -79,7 +79,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UserInfos</servlet-name>
-        <url-pattern>/GetUserInfos</url-pattern>
+        <url-pattern>/UserInfos</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Reset</servlet-name>

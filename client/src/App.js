@@ -98,9 +98,8 @@ class App extends Component {
 			<Router>
 			  <div>
 					<Switch>
-						<Route path="/me">
-							<Profile/>
-						</Route>
+						<Route path="/me/:msg" component={Profile}/>
+						<Route path="/me" component={Profile}/>
 						<Route path="/logout">
 							<Logout/>
 						</Route>

@@ -122,22 +122,13 @@ class Conference extends Component {
 		params.append('id_conf', this.state.conf.id_conf);
 		axios.get("http://localhost:8080/Project_war/Inscriptions?" + params)
 		.then(res => {
+			console.log(res.data);
 			if (res.data.code === undefined) {
 				this.setState({inscriptions: res.data.inscriptions});
 			}
 		});
 	}
-	tokenConfigMultiPart = () => {
-
-        const config = {
-            headers: {
-				"Content-Type": "multipart/form-data; boundary=--------------------------811161660471543283806813",            }
-        };
-
-        return config;
-	};
 	
-
 	subscribeConf() {
 		const { selectedType, selectedFile } = this.state;
 		if (selectedType <= 0) return;
@@ -165,20 +156,29 @@ class Conference extends Component {
 			const key = read_cookie("key")
 			const id_conf = this.props.match.params.id
 			const id_type = selectedType
-			let blob = new Blob(["<html>…</html>"], {type: 'text/html'});
+			let blob = new Blob([selectedFile], {type: selectedFile.type});
 			data.append("file", blob)
+
+			console.log(blob);
 
 			var requestOptions = {
 			  method: 'POST',
 			  body: data,
 			  redirect: 'follow'
 			};
+
+			this.setState({loading: true});
 			
 			fetch('http://localhost:8080/Project_war/Inscriptions?key='+key+'&id_conf='+id_conf+'&id_type='+id_type+'&op=subscribe&is_file=1', requestOptions)
 			  .then(response => response.text())
-			  .then(result => console.log(result))
-			  .catch(error => console.log('error', error));
-
+			  .then(result => {
+					console.log(result);
+					document.location.reload();
+				})
+			  .catch(error => {
+					this.setState({loading: false});
+					console.log('error', error)
+				});
 			}
 	}
 
@@ -214,7 +214,7 @@ class Conference extends Component {
 					{needFile && 
 						<div>
 							<label className="m-1">
-								<input type="file" class="form-control-file" onChange={(e) => this.setState({selectedFile: e})}/>
+								<input type="file" class="form-control-file" onChange={(e) => this.setState({selectedFile: e.target.files[0]})}/>
 							</label>
 						</div>
 					}
@@ -260,7 +260,7 @@ class Conference extends Component {
 					return (
 						<tbody>
 							<tr>
-								<td class="align-middle"><a href="javascript:void(0)" onClick={() => this.setState({showUserInfosModal: inscription.user})}>{inscription.user.mail}</a></td>
+								<td class="align-middle"><a href="javascript:void(0)" onClick={() => this.setState({showUserInfosModal: inscription})}>{inscription.user.mail}</a></td>
 								<td class="align-middle">{inscription.type == -1 ? "Gratuit" : (inscription.nom + " -- " + inscription.tarif_early + "€")}</td>
 								<td class="align-middle">{statut}</td>
 								<td>
@@ -382,7 +382,8 @@ class Conference extends Component {
 	}
 
 	renderUserInfosModal() {
-		const infos = this.state.showUserInfosModal;
+		if (!this.state.showUserInfosModal) return;
+		let infos = this.state.showUserInfosModal.user;
 		if (infos !== false) return (
 			<div class="modal" style={{display: 'block', backgroundColor: '#00000050'}} id="exampleModal" aria-hidden="true">
 				<div class="modal-dialog">
@@ -401,6 +402,18 @@ class Conference extends Component {
 									)
 								}
 							})}
+							{this.state.showUserInfosModal.file && 
+								<button
+									type="button"
+									class="btn btn-primary"
+									onClick={() => {
+										let pdfWindow = window.open("")
+										pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + this.state.showUserInfosModal.file + "'></iframe>")
+									}}
+									>
+									Afficher le justificatif
+								</button> 
+							}
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" onClick={() => this.setState({showUserInfosModal: false})}>Fermer</button>

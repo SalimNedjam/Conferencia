@@ -58,7 +58,7 @@ const INFOS_FORM = {
 
 const PASSWORD_FORM = {
 	oldPassword: {
-		name: 'email',
+		name: 'oldPassword',
 		type: 'password',
 		label: "Ancien mot de passe",
 		minLength: 5,
@@ -95,10 +95,10 @@ class Profile extends Component {
 		params.append('key', read_cookie("key"));
 		params.append('idUser', this.props.user.id);
 
-		axios.post("http://localhost:8080/Project_war/GetUserInfos", params)
+		axios.get("http://localhost:8080/Project_war/UserInfos?" + params)
 			.then(res => {
 				if (res.data.code === undefined) {
-				this.setState({infos: res.data});
+					this.setState({infos: res.data});
 				}
 			}
 		);
@@ -112,22 +112,20 @@ class Profile extends Component {
 				index = Object.keys(INFOS_FORM)[index];
 				if (!INFOS_FORM[index].verify) {
 					params.append(index, this.inputs[index].value);
-					console.log(this.inputs[index].value);
 				}
+				params.append('op', 'info');
 				this.setState({loading: true});
-		}
-			
-
-		// axios.post("http://localhost:8080/Project_war/CreateUser", params)
-		// .then(res => {
-		//     if (res.data.code === undefined) {
-		//         window.location.href = '/login/ok';
-		//     } else {
-		//         let errors = {};
-		//         errors["serverError"] = res.data.message;
-		//         this.setState({errors})
-		//     }
-		// });
+				axios.post("http://localhost:8080/Project_war/UserInfos", params)
+					.then(res => {
+							if (res.data.code === undefined) {
+								window.location.href = '/me/ok';
+							} else {
+								let errors = {};
+								errors["serverError"] = res.data.message;
+								this.setState({errors})
+							}
+					});
+			}
 		}
 	}
 
@@ -140,7 +138,18 @@ class Profile extends Component {
 					params.append(index, this.inputs[index].value);
 					console.log(this.inputs[index].value);
 				}
+				params.append('op', 'password');
 				this.setState({loading: true});
+				axios.post("http://localhost:8080/Project_war/UserInfos", params)
+					.then(res => {
+							if (res.data.code === undefined) {
+								window.location.href = '/me/ok';
+							} else {
+								let errors = {};
+								errors["serverError"] = res.data.message;
+								this.setState({errors})
+							}
+					});
 			}
 		}
 	}
@@ -353,13 +362,21 @@ class Profile extends Component {
 				</div>
 			</div>
 		)
+	}
 
+	renderEditMsg() {
+		if (this.props.match.params && this.props.match.params.msg === "ok") return (
+			<div class="container box-sm alert alert-success p-2" role="alert">
+				Données modifiées !
+			</div>
+		)
 	}
 
 	render() {
 		return (
 			<div class="mb-5">
 				<Header/>
+				{this.renderEditMsg()}
 				{this.state.errors["serverError"] && 
 					<div class="alert alert-danger p-2" role="alert">
 					{this.state.errors["serverError"]}

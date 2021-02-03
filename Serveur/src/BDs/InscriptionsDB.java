@@ -3,6 +3,7 @@ package BDs;
 import Tools.Database;
 import Tools.EmailUtil;
 import Tools.Facturation.PDFCreator;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
@@ -126,7 +128,17 @@ public class InscriptionsDB {
                 conf.put("approved", rs.getInt("approved"));
                 conf.put("paid", rs.getBoolean("paid"));
                 conf.put("need_file", rs.getBoolean("need_file"));
-                conf.put("file", rs.getBlob("file"));
+
+                Blob blob = rs.getBlob("file");
+                String blobStr = "";
+                if (blob != null) {
+                    byte[] bytes = blob.getBytes(1, (int) blob.length());
+                    if (bytes == null || bytes.length == 0) {
+                        return null;
+                    }
+                    blobStr = Base64.encode(bytes);
+                }
+                conf.put("file", blobStr);
 
                 array.put(conf);
             }
@@ -179,7 +191,17 @@ public class InscriptionsDB {
                 conf.put("approved", rs.getInt("approved"));
                 conf.put("paid", rs.getBoolean("paid"));
                 conf.put("need_file", rs.getBoolean("need_file"));
-                conf.put("file", rs.getBlob("file"));
+
+                Blob blob = rs.getBlob("file");
+                String blobStr = "";
+                if (blob != null) {
+                    byte[] bytes = blob.getBytes(1, (int) blob.length());
+                    if (bytes == null || bytes.length == 0) {
+                        return null;
+                    }
+                    blobStr = Base64.encode(bytes);
+                }
+                conf.put("file", blobStr);
 
                 array.put(conf);
             }
