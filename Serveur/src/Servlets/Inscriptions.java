@@ -62,12 +62,12 @@ public class Inscriptions extends HttpServlet {
                     json = InscriptionsManager.inviteUser(key, email, idConf, idType, isPaid);
                     break;
                 default:
-                    json = ErrorJSON.serviceRefused("Undifined Operation", 5);
+                    json = ErrorJSON.serviceRefused("Undefined Operation", 5);
                     break;
             }
 
         }else {
-            json = ErrorJSON.serviceRefused("Undifined Operation", 5);
+            json = ErrorJSON.serviceRefused("Undefined Operation", 6);
         }
 
         response.setContentType(" text / json ");

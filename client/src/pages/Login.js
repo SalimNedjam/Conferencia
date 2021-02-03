@@ -102,9 +102,6 @@ export default class Login extends Component {
 									}
 								}
 								id="passwordInput"/>
-								<a onClick={() => this.props.forgot()}>
-								Mot de passe oublié ?
-							</a>
 						</div>
 						<div class="mb-3 form-check">
 							<input 

@@ -2,20 +2,21 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import {read_cookie} from 'sfcookies';
 import axios from 'axios';
+import request from 'request';
 
 import Header from '../components/Header';
 import Loading from '../components/Loading';
 import Button from '../components/Button';
 
 class Conference extends Component {
-
+	
 	constructor(props) {
 		super(props);
 		this.state = {
 			conf: null,
 			selectedType: 0,
 			needFile: false,
-			uploadedFile: false,
+			selectedFile: undefined,
 			mail: undefined,
 			subscribed: undefined,
 			loading: false,
@@ -58,7 +59,6 @@ class Conference extends Component {
 		this.setState({loading: true});
 		axios.post("http://localhost:8080/Project_war/Inscriptions", params)
 		.then(res => {
-			console.log(res.data);
 			if (res.data.code === undefined) {
 				document.location.reload();
 			} else {
@@ -83,7 +83,6 @@ class Conference extends Component {
 	}
 
 	setInscriptionStatut(id, statut, reason) {
-		console.log(id, statut, reason);
 		if (statut == 'approve' || statut == 'disapprove' || statut == 'pay') {
 			let params = new URLSearchParams();
 			params.append('key', read_cookie("key"));
@@ -96,7 +95,6 @@ class Conference extends Component {
 			this.setState({loading: true});
 			axios.post("http://localhost:8080/Project_war/Inscriptions", params)
 			.then(res => {
-				console.log(res.data);
 				if (res.data.code === undefined) {
 					document.location.reload();
 				} else {
@@ -125,7 +123,6 @@ class Conference extends Component {
 		params.append('id_conf', this.state.conf.id_conf);
 		axios.get("http://localhost:8080/Project_war/Inscriptions?" + params)
 		.then(res => {
-			console.log(res.data);
 			if (res.data.code === undefined) {
 				this.setState({inscriptions: res.data.inscriptions});
 			}
@@ -133,24 +130,47 @@ class Conference extends Component {
 	}
 
 	subscribeConf() {
-		if (this.state.selectedType <= 0) return;
-		const params = new URLSearchParams();
-		params.append('key', read_cookie("key"));
-		params.append('op', 'subscribe');
-		params.append('id_conf', this.props.match.params.id);
-		params.append('id_type', this.state.selectedType);
+		const { selectedType, selectedFile } = this.state;
+		if (selectedType <= 0) return;
+		if (selectedFile === undefined) {
+			let params = new URLSearchParams();
+			params.append('key', read_cookie("key"));
+			params.append('op', 'subscribe');
+			params.append('id_conf', this.props.match.params.id);
+			params.append('id_type', selectedType);
+		
+			this.setState({loading: true});
 	
+			axios.post("http://localhost:8080/Project_war/Inscriptions", params)
+			.then(res => {
+				console.log(res.data);
+				if (res.data.code === undefined) {
+					document.location.reload();
+				} else {
+					this.setState({loading: false});
+				}
+			});
+		} else {
+			const data = new FormData();
+			data.append('key', read_cookie("key"));
+			data.append('op', 'subscribe');
+			data.append('id_conf', this.props.match.params.id);
+			data.append('id_type', selectedType);
+			data.append('file', selectedFile);
 
-		this.setState({loading: true});
+			var options = {
+				'method': 'POST',
+				'url': 'http://localhost:8080/Project_war/Inscriptions',
+				'headers': {
+				},
+				formData: data,
+			};
 
-		axios.post("http://localhost:8080/Project_war/Inscriptions", params)
-		.then(res => {
-			if (res.data.code === undefined) {
-				document.location.reload();
-			} else {
-				this.setState({loading: false});
-			}
-		});
+			request(options, function (error, response) {
+				if (error) throw new Error(error);
+				console.log(response.body);
+			});
+		}
 	}
 
 	renderTypes() {
@@ -161,7 +181,6 @@ class Conference extends Component {
 					class="form-select m-1"
 					onChange={(e) => {
 						const v = e.target.value.split("-");
-						console.log(v);
 						this.setState({selectedType: v[0], needFile: v[1] == 1})
 					}}>
 					<option value={0}>Sélectionnez un type</option>
@@ -177,24 +196,22 @@ class Conference extends Component {
 	}
 
 	renderSubscribe() {
-		const {conf, selectedType, subscribed, needFile, uploadedFile} = this.state;
+		const {conf, selectedType, subscribed, needFile, selectedFile} = this.state;
 		if (subscribed === undefined) return;
 		if (conf.responsable.id_resp != this.props.user.id && !this.props.user.admin && !subscribed)	return (
 			<fieldset disabled={subscribed}>
 				<div class="d-flex flex-row">
 					{this.renderTypes()}
 					{needFile && 
-						<button
-							type="button"
-							name="add-file"
-							onClick={() => {this.setState({uploadedFile: true})}}
-							class={"btn m-1 w-25 " + (uploadedFile ? "btn-outline-primary" : "btn-primary")}>
-							{uploadedFile ? "Fichier téléversé" : "Téléverser le justificatif"}
-						</button>
+						<div>
+							<label className="m-1">
+								<input type="file" class="form-control-file" onChange={(e) => this.setState({selectedFile: e})}/>
+							</label>
+						</div>
 					}
 					<Button
 						loading={this.state.loading}
-						disabled={(selectedType <= 0) || (needFile && !uploadedFile)}
+						disabled={(selectedType <= 0) || (needFile && !selectedFile)}
 						class="btn btn-outline-primary m-1" 
 						onClick={() => this.subscribeConf()}
 						title="S'inscrire"/>
