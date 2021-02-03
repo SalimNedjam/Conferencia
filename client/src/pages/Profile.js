@@ -113,6 +113,7 @@ class Profile extends Component {
 				if (!INFOS_FORM[index].verify) {
 					params.append(index, this.inputs[index].value);
 				}
+				params.append('key', read_cookie("key"));
 				params.append('op', 'info');
 				this.setState({loading: true});
 				axios.post("http://localhost:8080/Project_war/UserInfos", params)
@@ -122,7 +123,7 @@ class Profile extends Component {
 							} else {
 								let errors = {};
 								errors["serverError"] = res.data.message;
-								this.setState({errors})
+								this.setState({errors, loading: false})
 							}
 					});
 			}
@@ -138,6 +139,7 @@ class Profile extends Component {
 					params.append(index, this.inputs[index].value);
 					console.log(this.inputs[index].value);
 				}
+				params.append('key', read_cookie("key"));
 				params.append('op', 'password');
 				this.setState({loading: true});
 				axios.post("http://localhost:8080/Project_war/UserInfos", params)
@@ -147,7 +149,7 @@ class Profile extends Component {
 							} else {
 								let errors = {};
 								errors["serverError"] = res.data.message;
-								this.setState({errors})
+								this.setState({errors, loading: false})
 							}
 					});
 			}
@@ -326,7 +328,7 @@ class Profile extends Component {
 	renderInfos() {
 		const { infos, loading} = this.state;
 		if (infos) return (
-			<div class="box container box-md mt-5 p-3">
+			<div>
 				<h2>{this.props.user.login}</h2>
 				<hr/>
 				<div>
@@ -366,7 +368,7 @@ class Profile extends Component {
 
 	renderEditMsg() {
 		if (this.props.match.params && this.props.match.params.msg === "ok") return (
-			<div class="container box-sm alert alert-success p-2" role="alert">
+			<div class="container box-md alert alert-success p-2 mt-5" role="alert">
 				Données modifiées !
 			</div>
 		)
@@ -377,12 +379,14 @@ class Profile extends Component {
 			<div class="mb-5">
 				<Header/>
 				{this.renderEditMsg()}
-				{this.state.errors["serverError"] && 
-					<div class="alert alert-danger p-2" role="alert">
-					{this.state.errors["serverError"]}
-					</div>
-				}
-				{this.renderInfos()}
+				<div class="box container box-md mt-5 p-3">
+					{this.state.errors["serverError"] && 
+						<div class="alert alert-danger p-2" role="alert">
+						{this.state.errors["serverError"]}
+						</div>
+					}
+					{this.renderInfos()}
+				</div>
 			</div>
 		)
 	}
