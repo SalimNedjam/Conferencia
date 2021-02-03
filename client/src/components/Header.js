@@ -19,7 +19,7 @@ class Header extends Component {
                   <button 
                     class="btn btn-link" 
                     onClick={() => window.location.href = "/me"}>
-                    {this.props.user.firstName} {this.props.user.lastName} 
+                      {this.props.user.firstName ? this.props.user.firstName + " " + this.props.user.lastName : "Mon compte"}
                   </button>
                 }
                 <button 

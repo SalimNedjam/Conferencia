@@ -327,6 +327,13 @@ export default class NewConference extends Component {
                     </div>
                 }
                 <div class="d-flex mb-2 flex-row">
+                    <button
+                        type="button"
+                        name="add"
+                        onClick={() => this.addType()}
+                        class="btn btn-outline-primary m-1">
+                        +
+                    </button>
                     <input 
                         type="text"
                         class="form-control m-1 w-25"
@@ -351,7 +358,8 @@ export default class NewConference extends Component {
                     <div class="m-1 form-check w-25 d-flex align-items-center">
                         <label>
                             <input 
-                                type="checkbox" 
+                                type="checkbox"
+                                checked={this.state.needFile}
                                 defaultChecked={false}
                                 class="form-check-input"
                                 onChange={(e) => {
@@ -361,13 +369,6 @@ export default class NewConference extends Component {
                                 Justificatif
                         </label>
                     </div>     
-                    <button
-                        type="button"
-                        name="add"
-                        onClick={() => this.addType()}
-                        class="btn btn-outline-primary m-1 w-25">
-                        Ajouter
-                    </button>
                 </div>
                 {this.renderAddedTypes()}
             </div>
