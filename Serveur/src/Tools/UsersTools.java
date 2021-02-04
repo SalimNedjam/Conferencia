@@ -10,6 +10,9 @@ public class UsersTools {
         return UsersDB.insertUser(password, email, nom, prenom, title, institution, address, zip, city, country, phone);
     }
 
+    public static boolean updateUser(int user_id, String nom, String prenom, String title, String institution, String address, String zip, String city, String country, String phone) throws SQLException {
+        return UsersDB.updateUser(user_id, nom, prenom, title, institution, address, zip, city, country, phone);
+    }
 
     public static int getUserId(String login) throws SQLException {
         return UsersDB.getUserId(login);

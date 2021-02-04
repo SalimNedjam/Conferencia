@@ -128,17 +128,15 @@ public class AuthsManager {
         }
     }
 
-    public static JSONObject changePassword(String login, String password, String newPassword) {
-        if (login == null || login.equals("") || password == null || password.equals("") || newPassword == null || newPassword.equals(""))
+    public static JSONObject changePassword(String key, String password, String newPassword) {
+        if (key == null || key.equals("") || password == null || password.equals("") || newPassword == null || newPassword.equals(""))
             return ErrorJSON.serviceRefused("Erreur d'arguments ", -1);
 
         try {
-            if (!UsersTools.existEmail(login))
-                return ErrorJSON.serviceRefused("Utilisateur introuvable", 1);
 
-
-            JSONObject o = AuthsTools.getUserInfosFromLogin(login);
-            int userId = o.getInt("user");
+            if (!AuthsTools.isKeyValid(key))
+                return ErrorJSON.serviceRefused("Clé invalide", 1);
+            int userId = AuthsTools.getUserIdFromKey(key);
             if (!AuthsTools.passwordCheck(userId, password))
                 return ErrorJSON.serviceRefused("Mot de passe incorrect", 2);
 
@@ -152,8 +150,6 @@ public class AuthsManager {
         } catch (SQLException e) {
             return ErrorJSON.serviceRefused("SQL ERROR " + e.getMessage(), 1000);
 
-        } catch (JSONException e) {
-            return ErrorJSON.serviceRefused("JSON ERROR " + e.getMessage(), 100);
         }
     }
 }

@@ -108,8 +108,31 @@ public class UsersDB {
 
         return true;
     }
+    public static boolean updateUser(int idUser, String nom, String prenom, String title, String institution, String address, String zip, String city, String country, String phone) throws SQLException {
+        String query = "UPDATE UserInfos SET nom = ?, prenom = ?, title = ?, institution = ?, address = ?, zip = ?, city = ?, country = ?, phone = ? WHERE id_user = ? ";
+        try (Connection conn = Database.getMySQLConnection();
+             PreparedStatement preparedStmt = conn.prepareStatement(query)) {
 
-    public static boolean existUser(int idUser) throws SQLException {
+            preparedStmt.setString(1, nom);
+            preparedStmt.setString(2, prenom);
+            preparedStmt.setString(3, title);
+            preparedStmt.setString(4, institution);
+            preparedStmt.setString(5, address);
+            preparedStmt.setString(6, zip);
+            preparedStmt.setString(7, city);
+            preparedStmt.setString(8, country);
+            preparedStmt.setString(9, phone);
+            preparedStmt.setInt(10, idUser);
+
+            if (preparedStmt.executeUpdate() > 0){
+                return true;
+            }
+
+        }
+        return false;
+
+    }
+        public static boolean existUser(int idUser) throws SQLException {
         String query = " select * From Users where id_user=?";
 
         try (Connection conn = Database.getMySQLConnection();
