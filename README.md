@@ -60,8 +60,8 @@ In mysql shell type:
 
 `exit`
 
-now execute this command in the terminal to load the DB structure.
-
+Execute this command in the terminal to load the DB structure.
+Warning: if you use MariaDB instead of Mysql you have to change all `utf8mb4_0900_ai_ci` in Dump.sql with `utf8mb4_general_ci`.
 The file `Dump.sql` is found in the root of the repository.
 
 `sudo mysql -u root -p project < Dump.sql`
